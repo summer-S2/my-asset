@@ -5,7 +5,9 @@ import { router } from "./router";
 function App() {
   return (
     <ConfigProvider
-    // theme={theme} // TODO 테마넣기
+      theme={{
+        token: { fontFamily: "Pretendard" },
+      }}
     >
       <RouterProvider router={router} />
     </ConfigProvider>
