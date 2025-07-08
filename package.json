@@ -1,0 +1,46 @@
+{
+  "name": "my-asset",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@faker-js/faker": "^9.9.0",
+    "@tailwindcss/postcss": "^4.1.11",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.5.2",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.29.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.2.0",
+    "postcss": "^8.5.6",
+    "postcss-nested": "^7.0.2",
+    "tailwindcss": "^4.1.11",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.34.1",
+    "vite": "^7.0.2"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.1.1",
+    "@tailwindcss/vite": "^4.1.11",
+    "@tanstack/react-query": "^5.81.5",
+    "@tanstack/react-table": "^8.21.3",
+    "@visx/visx": "^3.12.0",
+    "antd": "^5.26.4",
+    "firebase": "^11.10.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.60.0",
+    "react-router-dom": "^7.6.3",
+    "yup": "^1.6.1",
+    "zustand": "^5.0.6"
+  }
+}
