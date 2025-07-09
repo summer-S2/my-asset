@@ -5,9 +5,12 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import type { LoginSchema } from "../validators/login";
 import { useNavigate } from "react-router-dom";
 import { GoogleIcon } from "../assets/icons/GoogleIcon";
+import { useState } from "react";
 
 export const Login = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
   const { control, handleSubmit } = useForm<LoginSchema>({
     defaultValues: {
       //   username: "qb@test.com",
@@ -19,20 +22,30 @@ export const Login = () => {
   const { loginWithGoogle, loginWithEmail } = useAuthStore();
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
+    if (isLoading) return;
+
+    setIsLoading(true);
     try {
       await loginWithEmail(data.username, data.password);
       navigate("/");
     } catch (err) {
       alert("이메일 혹은 비밀번호를 다시 한번 확인해주세요.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleLogin = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
     try {
       await loginWithGoogle();
       navigate("/");
     } catch (err) {
       alert("로그인에 실패했습니다.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -76,6 +89,7 @@ export const Login = () => {
               htmlType="submit"
               color="primary"
               variant="solid"
+              disabled={isLoading}
             >
               로그인
             </Button>
@@ -86,6 +100,7 @@ export const Login = () => {
               size="large"
               htmlType="button"
               onClick={handleLogin}
+              disabled={isLoading}
               icon={
                 <div className="flex items-center justify-center">
                   <GoogleIcon />

@@ -1,7 +1,7 @@
 {
   "name": "my-asset",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -34,6 +34,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-query": "^5.81.5",
     "@tanstack/react-table": "^8.21.3",
+    "@visx/tooltip": "^3.12.0",
     "@visx/visx": "^3.12.0",
     "antd": "^5.26.4",
     "classnames": "^2.5.1",
