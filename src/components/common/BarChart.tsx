@@ -1,43 +1,31 @@
-import type { AssetData } from "../../types/api";
+import type { HistoryData } from "../../types/api";
 import { BarGroup } from "@visx/shape";
 import { Group } from "@visx/group";
 import { Text } from "@visx/text";
 import { useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
 import { scaleBand, scaleLinear, scaleOrdinal } from "@visx/scale";
-import { useEffect, useRef, useState } from "react";
 import type { BarGroupChartDataType } from "../../types/common";
-import { isEmpty } from "../../utils/fn";
-import { ACCOUNT_KEY, CHART_COLORS } from "../../utils/constants";
+import { ACCOUNT_TYPE, CHART_COLORS } from "../../utils/constants";
+import { useAssetChartData } from "../../hooks/useAssetChartData";
+import { formatKoreanCurrency } from "../../utils/fn";
+import { Fragment } from "react/jsx-runtime";
 
 interface Props {
-  data: AssetData | null;
+  data: HistoryData[] | null;
   width?: number;
   height?: number;
-  verticalMargin?: number;
 }
 
-const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+const margin = { top: 0, right: 0, bottom: 10, left: 0 };
 
-export const BarChart = ({
-  data,
-  width = 400,
-  height = 400,
-  verticalMargin = 120,
-}: Props) => {
+export const BarChart = ({ data, width = 400, height = 400 }: Props) => {
+  const { chartData } = useAssetChartData(data);
   const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } =
     useTooltip<BarGroupChartDataType>();
-  const [chartData, setChartData] = useState<BarGroupChartDataType[]>([]);
-  const svgRef = useRef<SVGSVGElement>(null);
-
-  useEffect(() => {
-    if (data && !isEmpty(data)) {
-      setChartData(data.monthTotal);
-    }
-  }, [data]);
 
   const colorScale = scaleOrdinal<string, string>({
-    domain: [...ACCOUNT_KEY],
+    domain: [...ACCOUNT_TYPE],
     range: CHART_COLORS,
   });
 
@@ -47,14 +35,14 @@ export const BarChart = ({
   });
 
   const x1Scale = scaleBand<string>({
-    domain: [...ACCOUNT_KEY],
+    domain: [...ACCOUNT_TYPE],
     padding: 0.1,
   });
 
   const yScale = scaleLinear<number>({
     domain: [
       0,
-      Math.max(...chartData.flatMap((d) => ACCOUNT_KEY.map((k) => d[k]))),
+      Math.max(...chartData.flatMap((d) => ACCOUNT_TYPE.map((k) => d[k]))),
     ] as [number, number],
     nice: true,
   });
@@ -65,11 +53,11 @@ export const BarChart = ({
 
   return (
     <div className="relative">
-      <svg width={width} height={height} ref={svgRef}>
-        <Group top={verticalMargin / 2}>
+      <svg width={width} height={height}>
+        <Group>
           <BarGroup
             data={chartData}
-            keys={[...ACCOUNT_KEY]}
+            keys={[...ACCOUNT_TYPE]}
             height={height - margin.top - margin.bottom}
             x0={(d) => d.date}
             x0Scale={x0Scale}
@@ -78,13 +66,17 @@ export const BarChart = ({
             color={(key) => colorScale(key)}
           >
             {(barGroups) =>
-              barGroups.map((barGroup) => {
+              barGroups.map((barGroup, index) => {
                 return (
-                  <Group key={`bar-group-${barGroup.index}`} left={barGroup.x0}>
+                  <Group
+                    key={`bar-group-${barGroup.index}-${barGroup.bars[index]}-${index}`}
+                    left={barGroup.x0}
+                  >
                     {barGroup.bars.map((bar) => (
-                      <>
+                      <Fragment
+                        key={`bar-group-bar-${barGroup.index}-${bar.index}-${bar.key}`}
+                      >
                         <rect
-                          key={`bar-group-bar-${barGroup.index}-${bar.index}`}
                           x={bar.x}
                           y={bar.y}
                           width={bar.width}
@@ -103,14 +95,14 @@ export const BarChart = ({
                           onMouseLeave={() => hideTooltip()}
                         />
                         <Text
-                          //   y={bar.height}
+                          y={height}
                           style={{
                             fontSize: "10px",
                           }}
                         >
                           {chartData[barGroup.index].date}
                         </Text>
-                      </>
+                      </Fragment>
                     ))}
                   </Group>
                 );
@@ -121,11 +113,15 @@ export const BarChart = ({
       </svg>
       {tooltipData && (
         <TooltipWithBounds left={tooltipLeft} top={tooltipTop}>
-          <div className=" text-black z-30">{`${tooltipData.date}`}</div>
-          <div className=" text-black z-30">{`입출금: ${tooltipData.deposit}`}</div>
-          <div className=" text-black z-30">{`증권: ${tooltipData.investment}`}</div>
-          <div className=" text-black z-30">{`대출: ${tooltipData.loan}`}</div>
-          <div className=" text-black z-30">{`저축: ${tooltipData.saving}`}</div>
+          <div className={`z-30`}>{`${tooltipData.date}`}</div>
+          {ACCOUNT_TYPE.map((el) => (
+            <div
+              key={el}
+              style={{
+                color: colorScale(el),
+              }}
+            >{`${el}: ${formatKoreanCurrency(tooltipData[el])}`}</div>
+          ))}
         </TooltipWithBounds>
       )}
     </div>

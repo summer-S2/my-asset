@@ -23,7 +23,7 @@ export const PageLayout = ({
           "mt-0": withoutHeader,
         })}
       >
-        <div className="w-full h-full">{children}</div>
+        <div className="w-full h-full max-w-[1280px] mx-auto">{children}</div>
       </main>
       {!withoutFooter && <Footer />}
     </div>

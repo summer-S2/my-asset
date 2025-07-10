@@ -1,9 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import { ProtectedRouter } from "./pages/ProtectedRouter";
 import { Root } from "./pages/Root";
-import { Home } from "./pages/Home";
+import { Home } from "./pages/home/Home";
 import { Login } from "./pages/Login";
 import { NotFound } from "./pages/NotFound";
+import { AccountDetail } from "./pages/accountDetail/AccountDetail";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -14,7 +15,10 @@ export const router = createBrowserRouter([
         <Root />
       </ProtectedRouter>
     ),
-    children: [{ index: true, path: "/", element: <Home /> }],
+    children: [
+      { index: true, path: "/", element: <Home /> },
+      { path: "/detail", element: <AccountDetail /> },
+    ],
   },
   { path: `*`, element: <NotFound /> },
 ]);

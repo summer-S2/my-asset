@@ -17,7 +17,6 @@ export const ProtectedRouter = ({ children }: Props) => {
     setIsLoading(true);
     onUserStateChange((user) => {
       setUser(user);
-      console.log(user);
 
       if (!user && location.pathname !== "/login") {
         navigate("/login");

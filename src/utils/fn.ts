@@ -10,7 +10,7 @@ export const isEmpty = (obj: any): boolean => {
 /**
  * 숫자를 '2억 3400만원 500원'처럼 한글 화폐 형식으로 변환
  */
-export function formatKoreanCurrency(amount: number): string {
+export const formatKoreanCurrency = (amount: number): string => {
   if (amount === 0) return "0원";
 
   const units = {
@@ -21,8 +21,16 @@ export function formatKoreanCurrency(amount: number): string {
 
   let result = "";
   if (units.억) result += `${units.억}억 `;
-  if (units.만) result += `${units.만}만 `;
-  if (units.원) result += `${units.원.toLocaleString()}원`;
+  if (units.만) result += `${units.만.toLocaleString()}만 `;
+  if (units.원) result += `${units.원.toLocaleString()}`;
 
-  return result.trim();
-}
+  return result.trim() + "원";
+};
+
+export const accountMasking = (account: string) => {
+  if (!account) return "";
+
+  const first = account.slice(0, 4);
+  const middle = account.slice(4, 7);
+  return `${first}-${middle}-******`;
+};

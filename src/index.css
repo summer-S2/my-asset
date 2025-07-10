@@ -3,3 +3,7 @@
 html {
   font-family: "Pretendard", sans-serif;
 }
+
+.flex-center {
+  @apply flex items-center justify-center;
+}

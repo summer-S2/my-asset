@@ -1,13 +1,13 @@
 import { create } from "zustand";
-import type { AssetData } from "../types/api";
-import { generateFakeData } from "../mocks";
+import type { HistoryData } from "../types/api";
+import { getHistoryList } from "../mocks";
 
 interface MyassetState {
-  data: AssetData;
-  setData: (data: AssetData) => void;
+  data: HistoryData[];
+  setData: (data: HistoryData[]) => void;
 }
 
 export const useMyassetStore = create<MyassetState>((set) => ({
-  data: generateFakeData(),
+  data: getHistoryList(100),
   setData: (newData) => set({ data: newData }),
 }));

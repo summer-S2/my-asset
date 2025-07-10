@@ -17,8 +17,19 @@ export type ChartDataType = {
 
 export type BarGroupChartDataType = {
   date: string; // 날짜(월)
-  deposit: number; // 입출금
-  loan: number; // 대출
-  investment: number; // 증권
-  saving: number; // 저축
+  입출금: number;
+  대출: number;
+  증권: number;
+  저축: number;
 };
+
+export type AccountDataType = {
+  bankName: string;
+  accountType: AccountType;
+  accountNumber: string;
+  amount: number;
+  regiDate: string;
+  histoty: HistoryData[];
+};
+
+export type OrderType = "asc" | "desc" | null;
