@@ -11,9 +11,15 @@ interface Props<T> {
   tableData: T[];
   columns: AccessorKeyColumnDef<T, any>[];
   onRowClick?: (row: T) => void;
+  isHeaderClickable?: boolean; // 테이블 헤더 클릭 가능 여부 (정렬)
 }
 
-export const Table = <T,>({ tableData, columns, onRowClick }: Props<T>) => {
+export const Table = <T,>({
+  tableData,
+  columns,
+  onRowClick,
+  isHeaderClickable,
+}: Props<T>) => {
   const [data, setData] = useState([...tableData]);
 
   useEffect(() => {
@@ -33,9 +39,11 @@ export const Table = <T,>({ tableData, columns, onRowClick }: Props<T>) => {
             {headerGroup.headers.map((header, index) => (
               <th
                 key={header.id}
-                className={`p-4 cursor-pointer ${
-                  index === 0 ? "rounded-tl-2xl" : ""
-                } ${index === columns.length - 1 ? "rounded-tr-2xl" : ""}`}
+                className={classNames("p-4", {
+                  "rounded-tl-2xl": index === 0,
+                  "rounded-tr-2xl": index === columns.length - 1,
+                  "cursor-pointer": isHeaderClickable && tableData.length > 0,
+                })}
               >
                 {flexRender(
                   header.column.columnDef.header,

@@ -12,5 +12,7 @@ export interface HistoryData {
   description: string; // 설명
   accountType: AccountType; // 계좌 종류
   bankName: string; // 은행 이름
+  sender: string; // 입금자 (보낸사람)
+  //   recipient: string; // 받는사람
   //   accountNumber: string; // 계좌번호
 }

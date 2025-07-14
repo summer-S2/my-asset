@@ -54,5 +54,15 @@ export const logout = async (): Promise<void> => {
 
 // 사용자 상태 변경
 export const onUserStateChange = (callback: (user: User | null) => void) => {
-  onAuthStateChanged(auth, (user) => callback(user));
+  return onAuthStateChanged(auth, (user) => callback(user));
 };
+
+// export const onUserStateChange = async (
+//   callback: (user: User | null) => void
+// ): Promise<void> => {
+//   try {
+//     await onAuthStateChanged(auth, (user) => callback(user));
+//   } catch (error) {
+//     throw error as FirebaseError;
+//   }
+// };

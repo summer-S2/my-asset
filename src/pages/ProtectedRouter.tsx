@@ -15,7 +15,7 @@ export const ProtectedRouter = ({ children }: Props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    onUserStateChange((user) => {
+    const unsubscription = onUserStateChange((user) => {
       setUser(user);
 
       if (!user && location.pathname !== "/login") {
@@ -24,7 +24,9 @@ export const ProtectedRouter = ({ children }: Props) => {
 
       setIsLoading(false);
     });
-  }, [setUser]);
+
+    return () => unsubscription();
+  }, [setUser, location.pathname]);
 
   // 신원 확인중일때는 아무것도 표출하지 않음
   if (isLoading) return null;

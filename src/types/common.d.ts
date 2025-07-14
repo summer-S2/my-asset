@@ -33,3 +33,8 @@ export type AccountDataType = {
 };
 
 export type OrderType = "asc" | "desc" | null;
+
+export type SortStateType<T> = {
+  key: keyof T | null;
+  order: OrderType;
+};

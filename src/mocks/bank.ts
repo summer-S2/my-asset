@@ -13,6 +13,7 @@ const getHistoryData = (): HistoryData => ({
   description: faker.lorem.words(2),
   accountType: faker.helpers.arrayElement(ACCOUNT_TYPE),
   bankName: faker.helpers.arrayElement(BANK_TYPE),
+  sender: faker.person.fullName(),
   //   accountNumber: faker.finance.accountNumber(),
 });
 //   accountNumber: faker.helpers.arrayElement(ACCOUT_NUMBER_LIST),

@@ -1,3 +1,5 @@
+import type { SortStateType } from "../types/common";
+
 /**
  * 객체가 비었는지 체크하는 함수
  */
@@ -27,10 +29,34 @@ export const formatKoreanCurrency = (amount: number): string => {
   return result.trim() + "원";
 };
 
+/**
+ * 계좌번호 마스킹 함수
+ *
+ * 숫자 13자리 -> 0000-000-******
+ */
 export const accountMasking = (account: string) => {
   if (!account) return "";
 
   const first = account.slice(0, 4);
   const middle = account.slice(4, 7);
   return `${first}-${middle}-******`;
+};
+
+/**
+ * 정렬 토글 함수
+ * 정렬 순서 -> 오름차순 - 내림차순 - 취소
+ */
+export const toggleSort = <T>(
+  key: keyof T | null,
+  setSortState: React.Dispatch<React.SetStateAction<SortStateType<T>>>
+) => {
+  setSortState((prev) => {
+    let nextOrder: "asc" | "desc" | null;
+    if (prev.key !== key) nextOrder = "asc";
+    else if (prev.order === "asc") nextOrder = "desc";
+    else if (prev.order === "desc") nextOrder = null;
+    else nextOrder = "asc";
+
+    return { key: nextOrder ? key : null, order: nextOrder };
+  });
 };
