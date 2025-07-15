@@ -1,0 +1,18 @@
+#version: '3.8'
+#
+services:
+  db:
+    image: mysql:8.0 # MySQL 8.0 이미지
+    container_name: express_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password # 루트 비밀번호
+      MYSQL_DATABASE: yj_onboarding # 생성할 데이터베이스 이름
+      MYSQL_USER: yj # 사용자 계정
+      MYSQL_PASSWORD: password # 사용자 비밀번호
+    ports:
+      - "3306:3306" # 호스트와 컨테이너 포트 매핑
+    volumes:
+      - mysql_data:/var/lib/mysql # 데이터를 호스트에 유지
+
+volumes:
+  mysql_data: # MySQL 데이터를 저장하는 볼륨
