@@ -7,7 +7,7 @@ const pool = mysql.createPool({
   database: "yj_onboarding",
   port: 3306,
   waitForConnections: true,
-  connectionsLimit: 10,
+  connectionLimit: 10,
   queueLimit: 0,
 });
 

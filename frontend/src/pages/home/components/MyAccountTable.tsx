@@ -1,7 +1,8 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { Loader } from "../../../components/common/Loader";
 import { Table } from "../../../components/common/Table";
-import type { AccountDataType, SortStateType } from "../../../types/common";
+import type { SortStateType } from "../../../types/common";
+import type { AccountData } from "../../../types/api";
 import { Button, Input, Pagination } from "antd";
 import React, { useEffect, useState } from "react";
 import { accountMasking, formatKoreanCurrency } from "../../../utils/fn";
@@ -11,20 +12,20 @@ import { PlusIcon } from "../../../assets/icons/PlusIcon";
 import { TableHeader } from "../../../components/common/TableHeader";
 
 interface Props {
-  data: AccountDataType[] | null;
+  data: AccountData[] | null;
   isLoading?: boolean;
   setOpenAddModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const MyAccountTable = ({ data, isLoading, setOpenAddModal }: Props) => {
   const navigate = useNavigate();
-  const columnHelper = createColumnHelper<AccountDataType>();
-  const [filteredData, setFilteredData] = useState<AccountDataType[]>([]);
+  const columnHelper = createColumnHelper<AccountData>();
+  const [filteredData, setFilteredData] = useState<AccountData[]>([]);
   const [page, setPage] = useState(1);
   const [pageSize, _setPageSize] = useState(10);
-  const [pagedDate, setPagedData] = useState<AccountDataType[]>([]); // 페이징 처리된 데이터
+  const [pagedDate, setPagedData] = useState<AccountData[]>([]); // 페이징 처리된 데이터
   const [searchKeyword, setSearchKeyword] = useState(""); // 검색어
-  const [sortState, setSortState] = useState<SortStateType<AccountDataType>>({
+  const [sortState, setSortState] = useState<SortStateType<AccountData>>({
     key: null,
     order: null,
   });
@@ -32,7 +33,7 @@ export const MyAccountTable = ({ data, isLoading, setOpenAddModal }: Props) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (data && data?.length > 0) {
-      const keys: (keyof AccountDataType)[] = ["bankName", "accountNumber"]; // 은행명, 계좌번호
+      const keys: (keyof AccountData)[] = ["bankName", "accountNumber"]; // 은행명, 계좌번호
       const filtered = data.filter((item) =>
         keys.some((key) => item[key].toString().includes(searchKeyword))
       );

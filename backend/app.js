@@ -1,3 +1,4 @@
+const cors = require("cors");
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
@@ -10,6 +11,13 @@ var dbtestRouter = require("./routes/dbTest");
 var accountRouter = require("./routes/account");
 
 var app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5174", // 프론트 주소
+    credentials: true,
+  })
+);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

@@ -23,15 +23,6 @@ export type BarGroupChartDataType = {
   저축: number;
 };
 
-export type AccountDataType = {
-  bankName: string;
-  accountType: AccountType;
-  accountNumber: string;
-  amount: number;
-  regiDate: string;
-  histoty: HistoryData[];
-};
-
 export type OrderType = "asc" | "desc" | null;
 
 export type SortStateType<T> = {

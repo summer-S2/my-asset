@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import type { HistoryData } from "../types/api";
-import type { AccountDataType } from "../types/common";
+import type { AccountData } from "../types/api";
 import { faker } from "@faker-js/faker";
 
 export const useAccountData = (data: HistoryData[] | null) => {
-  const [accountData, setAccountData] = useState<AccountDataType[]>([]);
+  const [accountData, setAccountData] = useState<AccountData[]>([]);
 
   useEffect(() => {
     if (data) {
@@ -18,7 +18,7 @@ export const useAccountData = (data: HistoryData[] | null) => {
         {}
       );
 
-      const result: AccountDataType[] = Object.entries(grouped).map(
+      const result: AccountData[] = Object.entries(grouped).map(
         ([_, histoty]) => {
           const { bankName, accountType } = histoty[0];
           const accountNumber = faker.finance.accountNumber(13);

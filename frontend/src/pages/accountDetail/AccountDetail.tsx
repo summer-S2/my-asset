@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { PageLayout } from "../../components/layout/PageLayout";
 import { useEffect, useState } from "react";
-import type { AccountDataType } from "../../types/common";
+import type { AccountData } from "../../types/api";
 import { accountMasking } from "../../utils/fn";
 import { SectionTitle } from "../../components/common/SectionTitle";
 import { AccountHistoryTable } from "./components/AccountHistoryTable";
@@ -9,7 +9,7 @@ import { AccountHistoryTable } from "./components/AccountHistoryTable";
 export const AccountDetail = () => {
   const location = useLocation();
 
-  const [data, setData] = useState<AccountDataType | null>(null);
+  const [data, setData] = useState<AccountData | null>(null);
 
   useEffect(() => {
     if (location) {

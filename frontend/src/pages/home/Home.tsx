@@ -6,12 +6,19 @@ import { AddAccountModal } from "./components/AddAccountModal";
 import { MyAccountTable } from "./components/MyAccountTable";
 import { MyAssetChangeChart } from "./components/MyAssetChangeChart";
 import { MyAssetDonutChart } from "./components/MyAssetDonutChart";
+import { useGetAccount } from "../../hooks/useGetAccount";
 
 export const Home = () => {
   const { data } = useMyassetStore();
   const { accountData } = useAccountData(data);
   const [openAddModal, setOpenAddModal] = useState(false);
 
+  const { data: account } = useGetAccount({
+    page: 1,
+    limit: 10,
+    keyword: "",
+  });
+  console.log(account);
   // console.log(accountData);
   // console.log(data);
 
