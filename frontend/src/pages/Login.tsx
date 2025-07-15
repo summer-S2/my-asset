@@ -6,15 +6,15 @@ import type { LoginSchema } from "../validators/login";
 import { useNavigate } from "react-router-dom";
 import { GoogleIcon } from "../assets/icons/GoogleIcon";
 import { useState } from "react";
+import { useAlertStore } from "../stores/alertStore";
 
 export const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const { openAlert } = useAlertStore();
 
-  const { control, handleSubmit } = useForm<LoginSchema>({
+  const { control, handleSubmit, watch } = useForm<LoginSchema>({
     defaultValues: {
-      //   username: "qb@test.com",
-      //   password: "qb@test.com",
       username: "",
       password: "",
     },
@@ -29,7 +29,10 @@ export const Login = () => {
       await loginWithEmail(data.username, data.password);
       navigate("/");
     } catch (err) {
-      alert("이메일 혹은 비밀번호를 다시 한번 확인해주세요.");
+      openAlert({
+        title: "로그인 실패",
+        message: "이메일 혹은 비밀번호를 다시 한번 확인해주세요.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +52,6 @@ export const Login = () => {
     }
   };
 
-  // TODO 로그인 구현
   return (
     <PageLayout withoutHeader>
       <div className="w-full h-full bg-indigo-100">
@@ -75,10 +77,11 @@ export const Login = () => {
               name={"password"}
               control={control}
               render={({ field }) => (
-                <Input
+                <Input.Password
                   size="large"
                   id={"password"}
                   placeholder="비밀번호를 입력해주세요."
+                  type="password"
                   {...field}
                 />
               )}
@@ -89,7 +92,7 @@ export const Login = () => {
               htmlType="submit"
               color="primary"
               variant="solid"
-              disabled={isLoading}
+              disabled={isLoading || !watch("password") || !watch("username")}
             >
               로그인
             </Button>

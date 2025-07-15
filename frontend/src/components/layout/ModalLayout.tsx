@@ -35,6 +35,7 @@ export const ModalLayout = ({ open, setOpen, children }: Props) => {
       onCancel={handleCancel}
       afterClose={handleAfterClose}
       centered
+      footer={null}
     >
       {children}
     </Modal>

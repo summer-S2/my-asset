@@ -1,6 +1,7 @@
 import { ConfigProvider } from "antd";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router";
+import { Alert } from "./components/common/Alert";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       }}
     >
       <RouterProvider router={router} />
+      <Alert />
     </ConfigProvider>
   );
 }

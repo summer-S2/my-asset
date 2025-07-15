@@ -13,6 +13,10 @@ export const Home = () => {
   const [openAddModal, setOpenAddModal] = useState(false);
 
   // console.log(accountData);
+  // console.log(data);
+
+  // const result = accountData.map(({ histoty, ...rest }) => rest);
+  // console.log("히스토리제외", result);
 
   return (
     <PageLayout>

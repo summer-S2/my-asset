@@ -18,7 +18,7 @@ export const PageLayout = ({
     <div id="page-layout" className="h-screen w-screen flex flex-col">
       {!withoutHeader && <Header />}
       <main
-        className={classNames("flex-grow mx-4", {
+        className={classNames("flex-grow", {
           "mt-16": !withoutHeader,
           "mt-0": withoutHeader,
         })}

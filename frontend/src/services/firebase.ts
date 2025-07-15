@@ -37,6 +37,11 @@ export const googleLogin = async (): Promise<User> => {
 export const emailLogin = async (email: string, pw: string): Promise<User> => {
   try {
     const result = await signInWithEmailAndPassword(auth, email, pw);
+    // if (!result.user.displayName) {
+    //   updateProfile(result.user, {
+    //     displayName: "김쿼터백",
+    //   });
+    // }
     return result.user;
   } catch (error) {
     throw error as FirebaseError;

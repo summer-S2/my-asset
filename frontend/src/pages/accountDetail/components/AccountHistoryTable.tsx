@@ -24,6 +24,7 @@ export const AccountHistoryTable = ({ data, isLoading }: Props) => {
     key: "date",
     order: "desc",
   });
+  console.log(data);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (data && data?.length > 0) {
