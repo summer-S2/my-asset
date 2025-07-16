@@ -2,115 +2,84 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { Loader } from "../../../components/common/Loader";
 import { Table } from "../../../components/common/Table";
 import type { SortStateType } from "../../../types/common";
-import type { AccountData } from "../../../types/api";
 import { Button, Input, Pagination } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { accountMasking, formatKoreanCurrency } from "../../../utils/fn";
 import { useNavigate } from "react-router-dom";
 import { SectionTitle } from "../../../components/common/SectionTitle";
 import { PlusIcon } from "../../../assets/icons/PlusIcon";
 import { TableHeader } from "../../../components/common/TableHeader";
+import { useGetAccount } from "../../../hooks/useGetAccount";
+import type { Account } from "../../../types/api";
+import { ACCOUNT_TYPE_MAP } from "../../../utils/constants";
+import { useDeleteAccount } from "../../../hooks/useDeleteAccount";
 
 interface Props {
-  data: AccountData[] | null;
-  isLoading?: boolean;
+  // data: AccountData[] | null;
   setOpenAddModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const MyAccountTable = ({ data, isLoading, setOpenAddModal }: Props) => {
+export const MyAccountTable = ({ setOpenAddModal }: Props) => {
   const navigate = useNavigate();
-  const columnHelper = createColumnHelper<AccountData>();
-  const [filteredData, setFilteredData] = useState<AccountData[]>([]);
+  const columnHelper = createColumnHelper<Account>();
   const [page, setPage] = useState(1);
-  const [pageSize, _setPageSize] = useState(10);
-  const [pagedDate, setPagedData] = useState<AccountData[]>([]); // 페이징 처리된 데이터
+  const [limit, _setLimit] = useState(10);
   const [searchKeyword, setSearchKeyword] = useState(""); // 검색어
-  const [sortState, setSortState] = useState<SortStateType<AccountData>>({
+  const [input, setInput] = useState("");
+  const [sortState, setSortState] = useState<SortStateType<Account>>({
     key: null,
     order: null,
   });
 
+  const { data, isPending } = useGetAccount({
+    page: page,
+    limit: limit,
+    keyword: searchKeyword,
+    ...(sortState.order && { sort: `${sortState.key}.${sortState.order}` }),
+  });
+
+  const { mutate: del, isPending: delIsPending } = useDeleteAccount();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (data && data?.length > 0) {
-      const keys: (keyof AccountData)[] = ["bankName", "accountNumber"]; // 은행명, 계좌번호
-      const filtered = data.filter((item) =>
-        keys.some((key) => item[key].toString().includes(searchKeyword))
-      );
-      setFilteredData(filtered);
-    }
+    setSearchKeyword(input);
   };
-
-  useEffect(() => {
-    if (data && data.length > 0) {
-      setFilteredData(data);
-    } else {
-      setFilteredData([]);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    // 정렬 키값이 있음
-    if (sortState.key && sortState.order) {
-      let sorted = [...filteredData];
-      let key = sortState.key;
-      let nextOrder = sortState.order;
-      sorted.sort((a, b) => {
-        const aVal = a[key];
-        const bVal = b[key];
-
-        if (typeof aVal === "string" && typeof bVal === "string") {
-          return nextOrder === "asc"
-            ? aVal.localeCompare(bVal)
-            : bVal.localeCompare(aVal);
-        }
-
-        if (typeof aVal === "number" && typeof bVal === "number") {
-          return nextOrder === "asc" ? aVal - bVal : bVal - aVal;
-        }
-
-        return 0;
-      });
-      const sliced = sorted.slice((page - 1) * pageSize, page * pageSize);
-      setPagedData(sliced);
-      return;
-    }
-    setPagedData(filteredData.slice((page - 1) * 10, pageSize * page));
-  }, [page, filteredData, sortState]);
 
   const columns = [
     // 은행명
-    columnHelper.accessor("bankName", {
+    columnHelper.accessor("bank_name", {
       header: () => (
         <TableHeader
           contents={`은행명`}
           sortState={sortState}
           setSortState={setSortState}
-          sortKey="bankName"
+          sortKey="bank_name"
         />
       ),
       cell: (info) => <div className="flex-center">{info.getValue()}</div>,
     }),
     // 자산종류
-    columnHelper.accessor("accountType", {
+    columnHelper.accessor("account_type", {
       header: () => (
         <TableHeader
           contents={`자산종류`}
           sortState={sortState}
           setSortState={setSortState}
-          sortKey="accountType"
+          sortKey="account_type"
         />
       ),
-      cell: (info) => <div className="flex-center">{info.getValue()}</div>,
+      cell: (info) => (
+        <div className="flex-center">{ACCOUNT_TYPE_MAP[info.getValue()]}</div>
+      ),
     }),
     // 계좌번호
-    columnHelper.accessor("accountNumber", {
+    columnHelper.accessor("account_num", {
       header: () => (
         <TableHeader
           contents={`계좌번호`}
           sortState={sortState}
           setSortState={setSortState}
-          sortKey="accountNumber"
+          sortKey="account_num"
         />
       ),
       cell: (info) => (
@@ -118,13 +87,13 @@ export const MyAccountTable = ({ data, isLoading, setOpenAddModal }: Props) => {
       ),
     }),
     // 잔액
-    columnHelper.accessor("amount", {
+    columnHelper.accessor("balance", {
       header: () => (
         <TableHeader
           contents={`잔액`}
           sortState={sortState}
           setSortState={setSortState}
-          sortKey="amount"
+          sortKey="balance"
         />
       ),
       cell: (info) => (
@@ -134,17 +103,36 @@ export const MyAccountTable = ({ data, isLoading, setOpenAddModal }: Props) => {
       ),
     }),
     // 계좌생성일
-    columnHelper.accessor("regiDate", {
+    columnHelper.accessor("create_date", {
       header: () => (
         <TableHeader
           contents={`계좌생성일`}
           sortState={sortState}
           setSortState={setSortState}
-          sortKey="regiDate"
+          sortKey="create_date"
         />
       ),
-      cell: (info) => <div className="flex-center">{info.getValue()}</div>,
+      cell: (info) => (
+        <div className="flex-center">{info.getValue().split("T")[0]}</div>
+      ),
     }),
+    // 삭제
+    {
+      id: "delete",
+      header: () => <div className="flex-center">{"삭제"}</div>,
+      cell: ({ row }: { row: any }) => (
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            del(row.original.id);
+          }}
+          className="flex-center cursor-pointer w-full"
+          loading={delIsPending}
+        >
+          삭제
+        </Button>
+      ),
+    },
   ];
 
   return (
@@ -167,14 +155,14 @@ export const MyAccountTable = ({ data, isLoading, setOpenAddModal }: Props) => {
         </Button>
       </div>
       <div className="flex justify-between items-center px-4">
-        <div>{`조회된 데이터: ${filteredData.length ?? 0}건`}</div>
+        <div>{`조회된 데이터: ${data?.result.totalItems ?? 0}건`}</div>
 
         <form onSubmit={handleSubmit} className="flex justify-end">
           <div className="flex gap-2">
             <Input
-              id="searchKeyword"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
+              id="input"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
               width={`200px`}
               placeholder="은행명, 계좌번호 검색"
               allowClear
@@ -183,12 +171,12 @@ export const MyAccountTable = ({ data, isLoading, setOpenAddModal }: Props) => {
           </div>
         </form>
       </div>
-      {isLoading ? (
+      {isPending ? (
         <Loader />
-      ) : pagedDate && pagedDate.length > 0 ? (
+      ) : data && data.result.list.length > 0 ? (
         <div className="w-full flex-center flex-col gap-4">
           <Table
-            tableData={pagedDate}
+            tableData={data.result.list}
             columns={columns}
             // onRowClick={(row) => setSelectedRow(row)}
             onRowClick={(row) => {
@@ -198,8 +186,8 @@ export const MyAccountTable = ({ data, isLoading, setOpenAddModal }: Props) => {
           />
           <Pagination
             current={page}
-            total={filteredData?.length}
-            pageSize={pageSize}
+            total={data.result.totalItems}
+            pageSize={limit}
             onChange={setPage}
           />
         </div>

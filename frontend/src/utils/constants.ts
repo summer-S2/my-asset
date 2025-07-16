@@ -39,3 +39,15 @@ export const CHART_COLORS = [
   "#495A63",
   "#712C9C",
 ];
+
+export const ACCOUNT_TYPE_MAP: Record<number, string> = {
+  1: "입출금",
+  2: "저축",
+  3: "증권",
+  4: "연금",
+};
+
+export const TRANSACTION_TYPE_MAP: Record<string, string> = {
+  DEPOSIT: "입금",
+  WITHDRAWAL: "출금",
+};

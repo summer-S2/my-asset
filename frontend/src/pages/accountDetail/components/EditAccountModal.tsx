@@ -3,27 +3,38 @@ import { SectionTitle } from "../../../components/common/SectionTitle";
 import { ModalLayout } from "../../../components/layout/ModalLayout";
 import type { AddAccountSchema } from "../../../validators/addAccount";
 import { Button, Input } from "antd";
-import { usePostAccount } from "../../../hooks/usePostAccount";
+
 import { useEffect } from "react";
+import type { Account } from "../../../types/api";
+import { usePatchAccount } from "../../../hooks/usePatchAccount";
 interface Props {
+  data: Account;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export const AddAccountModal = ({ open, setOpen }: Props) => {
-  const { control, handleSubmit } = useForm<AddAccountSchema>({});
+export const EditAccountModal = ({ data, open, setOpen }: Props) => {
+  const { control, handleSubmit } = useForm<AddAccountSchema>({
+    defaultValues: {
+      account_num: data.account_num,
+      account_type: data.account_type,
+      balance: data.balance,
+      bank_id: data.bank_id,
+    },
+  });
 
-  const { mutate: postAccount, isSuccess, isPending } = usePostAccount();
+  const { mutate: patchAccount, isSuccess, isPending } = usePatchAccount();
 
-  const onSubmit: SubmitHandler<AddAccountSchema> = async (data) => {
+  const onSubmit: SubmitHandler<AddAccountSchema> = async (values) => {
     const formData = new FormData();
 
-    formData.append("account_num", data.account_num);
-    formData.append("balance", data.balance.toString());
-    formData.append("account_type", data.account_type.toString());
-    formData.append("bank_id", data.bank_id.toString());
+    formData.append("id", data.id.toString());
+    formData.append("account_num", values.account_num);
+    formData.append("balance", values.balance.toString());
+    formData.append("account_type", values.account_type.toString());
+    formData.append("bank_id", values.bank_id.toString());
     formData.append("user_id", "1");
 
-    postAccount(formData);
+    patchAccount(formData);
   };
 
   // 등록 성공시 모달 닫음

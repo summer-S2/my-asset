@@ -3,13 +3,14 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  type AccessorKeyColumnDef,
+  type ColumnDef,
 } from "@tanstack/react-table";
 import classNames from "classnames";
 
 interface Props<T> {
   tableData: T[];
-  columns: AccessorKeyColumnDef<T, any>[];
+  // columns: AccessorKeyColumnDef<T, any>[];
+  columns: ColumnDef<T, any>[];
   onRowClick?: (row: T) => void;
   isHeaderClickable?: boolean; // 테이블 헤더 클릭 가능 여부 (정렬)
 }

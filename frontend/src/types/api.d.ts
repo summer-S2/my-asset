@@ -42,12 +42,35 @@ export interface HistoryData {
   accountType: AccountType; // 계좌 종류
   bankName: string; // 은행 이름
   sender: string; // 입금자 (보낸사람)
-  //   recipient: string; // 받는사람
-  //   accountNumber: string; // 계좌번호
+}
+
+export interface Account {
+  id: number;
+  account_num: string;
+  balance: number;
+  bank_name: string;
+  user_name: string;
+  account_type: number;
+  balance: number;
+  create_date: string;
+  bank_id: number;
+}
+
+export interface History {
+  account_id: number;
+  amount: number;
+  create_date: string;
+  id: number;
+  memo: string;
+  transaction_date: string;
+  transaction_type: string; //"WITHDRAWAL"
+  transactor: string;
+  update_date: string;
 }
 
 export interface GetParams {
   page?: number;
   limit?: number;
   keyword?: string;
+  sort?: string;
 }
