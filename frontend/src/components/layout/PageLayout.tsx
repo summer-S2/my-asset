@@ -15,7 +15,10 @@ export const PageLayout = ({
   children,
 }: Props) => {
   return (
-    <div id="page-layout" className="h-screen w-screen flex flex-col">
+    <div
+      id="page-layout"
+      className="h-screen w-[calc(100vw-6px)] flex flex-col"
+    >
       {!withoutHeader && <Header />}
       <main
         className={classNames("flex-grow", {

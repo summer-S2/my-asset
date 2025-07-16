@@ -104,6 +104,20 @@ router.post("/", upload.none(), async (req, res) => {
   }
 
   try {
+    // 계좌번호 중복 여부 확인
+    const [[existing]] = await db.query(
+      `SELECT id FROM account WHERE account_num = ? AND delete_date IS NULL`,
+      [account_num]
+    );
+
+    if (existing) {
+      return res.status(409).json({
+        code: 409,
+        httpStatus: "CONFLICT",
+        message: "이미 존재하는 계좌번호입니다.",
+      });
+    }
+
     await db.query(
       `
       INSERT INTO account 

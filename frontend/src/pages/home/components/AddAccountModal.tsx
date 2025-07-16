@@ -1,16 +1,33 @@
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { SectionTitle } from "../../../components/common/SectionTitle";
 import { ModalLayout } from "../../../components/layout/ModalLayout";
-import type { AddAccountSchema } from "../../../validators/addAccount";
-import { Button, Input } from "antd";
+import {
+  addAccountValidator,
+  type AddAccountSchema,
+} from "../../../validators/addAccount";
+import { Button, Input, Select } from "antd";
 import { usePostAccount } from "../../../hooks/usePostAccount";
 import { useEffect } from "react";
+import { ACCOUNT_TYPE_OPTION, BANK_OPTION } from "../../../utils/constants";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export const AddAccountModal = ({ open, setOpen }: Props) => {
-  const { control, handleSubmit } = useForm<AddAccountSchema>({});
+  const {
+    control,
+    handleSubmit,
+    formState: { isValid, errors },
+  } = useForm<AddAccountSchema>({
+    mode: "onChange",
+    resolver: yupResolver(addAccountValidator),
+    defaultValues: {
+      bank_id: 0,
+      account_type: 0,
+    },
+  });
 
   const { mutate: postAccount, isSuccess, isPending } = usePostAccount();
 
@@ -33,6 +50,9 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
     }
   }, [isSuccess]);
 
+  console.log(isValid);
+  console.log(errors);
+
   return (
     <ModalLayout open={open} setOpen={setOpen}>
       <div className="flex flex-col gap-4">
@@ -53,20 +73,25 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                 name={"bank_id"}
                 control={control}
                 render={({ field }) => (
-                  // <Select
-                  //   style={{ width: "100%" }}
-                  //   options={[
-                  //     { value: "1", label: "농협은행" },
-                  //     { value: "2", label: "QTB은행" },
-                  //   ]}
-                  //   {...field}
-                  // />
-                  <Input
-                    size="large"
-                    id={"bank_id"}
-                    placeholder="은행명을 입력해주세요."
+                  <Select
+                    style={{ width: "100%" }}
+                    options={[
+                      {
+                        value: 0,
+                        label: "은행을 선택해주세요.",
+                        disabled: true,
+                      },
+                      ...BANK_OPTION,
+                    ]}
+                    // status={!!errors.bank_id ? "error" : ""}
                     {...field}
                   />
+                  // <Input
+                  //   size="large"
+                  //   id={"bank_id"}
+                  //   placeholder="은행명을 입력해주세요."
+                  //   {...field}
+                  // />
                 )}
               />
             </div>
@@ -79,12 +104,24 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                 name={"account_type"}
                 control={control}
                 render={({ field }) => (
-                  <Input
-                    size="large"
-                    id={"account_type"}
-                    placeholder="자산 종류를 입력해주세요."
+                  <Select
+                    style={{ width: "100%" }}
+                    options={[
+                      {
+                        value: 0,
+                        label: "자산 종류를 선택해주세요.",
+                        disabled: true,
+                      },
+                      ...ACCOUNT_TYPE_OPTION,
+                    ]}
                     {...field}
                   />
+                  // <Input
+                  //   size="large"
+                  //   id={"account_type"}
+                  //   placeholder="자산 종류를 입력해주세요."
+                  //   {...field}
+                  // />
                 )}
               />
             </div>
@@ -101,10 +138,12 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                     size="large"
                     id={"balance"}
                     placeholder="잔액을 입력해주세요."
+                    status={!!errors.balance ? "error" : ""}
                     {...field}
                   />
                 )}
               />
+              <p>{errors.balance?.message}</p>
             </div>
 
             <div>
@@ -119,10 +158,12 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                     size="large"
                     id={"account_num"}
                     placeholder="계좌 번호를 입력해주세요."
+                    status={!!errors.account_num ? "error" : ""}
                     {...field}
                   />
                 )}
               />
+              <p>{errors.account_num?.message}</p>
             </div>
           </form>
         </div>
@@ -134,6 +175,7 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
             form="addAccountForm"
             htmlType="submit"
             loading={isPending}
+            disabled={!isValid}
           >
             저장
           </Button>

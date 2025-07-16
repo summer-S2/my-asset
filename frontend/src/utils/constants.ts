@@ -51,3 +51,19 @@ export const TRANSACTION_TYPE_MAP: Record<string, string> = {
   DEPOSIT: "입금",
   WITHDRAWAL: "출금",
 };
+
+export const BANK_OPTION = [
+  { value: 1, label: "쿼터백은행" },
+  { value: 2, label: "신한은행" },
+  { value: 3, label: "카카오뱅크" },
+  { value: 4, label: "우리은행" },
+  { value: 5, label: "국민은행" },
+  { value: 6, label: "하나은행" },
+];
+
+export const ACCOUNT_TYPE_OPTION = [
+  { value: 1, label: "입출금" },
+  { value: 2, label: "저축" },
+  { value: 3, label: "증권" },
+  { value: 4, label: "연금" },
+];
