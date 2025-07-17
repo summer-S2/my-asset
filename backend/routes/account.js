@@ -6,111 +6,14 @@ const upload = multer();
 
 // 계좌 리스트 조회
 // GET /account?keyword=신한&limit=10&page=1
-// router.get("/", async (req, res) => {
-//   const { keyword = "", limit, page, sort = "" } = req.query;
-
-//   const isPaging = page !== undefined || limit !== undefined;
-
-//   const pageNum = Math.max(Number(page) || 1, 1);
-//   const limitNum = Math.max(Number(limit) || 10, 1);
-//   const offset = (pageNum - 1) * limitNum;
-
-//   const [sortKey, sortOrder] = sort.split(".");
-//   const validSortKeys = [
-//     "bank_name",
-//     "account_num",
-//     "balance",
-//     "create_date",
-//     "account_type",
-//   ];
-//   const validOrder = ["asc", "desc"];
-
-//   const orderByClause =
-//     sortKey && validSortKeys.includes(sortKey) && validOrder.includes(sortOrder)
-//       ? `ORDER BY ${sortKey} ${sortOrder.toUpperCase()}`
-//       : `ORDER BY a.id DESC`;
-
-//   try {
-//     let count = 0;
-//     let rows;
-
-//     // 1. 페이징 O → count + LIMIT + OFFSET
-//     if (isPaging) {
-//       const [[{ count: total }]] = await db.query(
-//         `
-//         SELECT COUNT(*) as count
-//         FROM account a
-//         JOIN bank b ON a.bank_id = b.id
-//         WHERE a.delete_date IS NULL
-//         AND (b.name LIKE ? OR a.account_num LIKE ?)
-//         `,
-//         [`%${keyword}%`, `%${keyword}%`]
-//       );
-//       count = total;
-
-//       [rows] = await db.query(
-//         `
-//         SELECT
-//           a.id, a.account_num, a.balance, a.create_date,a.account_type, a.bank_id,
-//           b.name AS bank_name,
-//           u.name AS user_name
-//         FROM account a
-//         JOIN bank b ON a.bank_id = b.id
-//         JOIN user u ON a.user_id = u.id
-//         WHERE a.delete_date IS NULL
-//         AND (b.name LIKE ? OR a.account_num LIKE ?)
-//         ${orderByClause}
-//         LIMIT ? OFFSET ?
-//         `,
-//         [`%${keyword}%`, `%${keyword}%`, limitNum, offset]
-//       );
-//     }
-//     // 2. 페이징 X → 전체 데이터 조회
-//     else {
-//       [rows] = await db.query(
-//         `
-//         SELECT
-//           a.id, a.account_num, a.balance, a.create_date,a.account_type, a.bank_id,
-//           b.name AS bank_name,
-//           u.name AS user_name
-//         FROM account a
-//         JOIN bank b ON a.bank_id = b.id
-//         JOIN user u ON a.user_id = u.id
-//         WHERE a.delete_date IS NULL
-//         AND (b.name LIKE ? OR a.account_num LIKE ?)
-//         ${orderByClause}
-//         `,
-//         [`%${keyword}%`, `%${keyword}%`]
-//       );
-//       count = rows.length;
-//     }
-
-//     res.status(200).json({
-//       code: 200,
-//       count,
-//       httpStatus: "OK",
-//       message: "success",
-//       result: {
-//         totalItems: count,
-//         totalPages: isPaging ? Math.ceil(count / limitNum) : 1,
-//         currentPage: isPaging ? pageNum : 1,
-//         list: rows,
-//       },
-//     });
-//   } catch (err) {
-//     console.error("Error:", err);
-//     res.status(500).json({
-//       code: 500,
-//       count: 0,
-//       httpStatus: "INTERNAL_SERVER_ERROR",
-//       message: err.message,
-//     });
-//   }
-// });
 router.get("/", async (req, res) => {
-  const { keyword = "", limit = 10, page = 1, sort = "" } = req.query;
+  const { keyword = "", limit, page, sort = "" } = req.query;
 
-  const offset = (page - 1) * limit;
+  const isPaging = page !== undefined || limit !== undefined;
+
+  const pageNum = Math.max(Number(page) || 1, 1);
+  const limitNum = Math.max(Number(limit) || 10, 1);
+  const offset = (pageNum - 1) * limitNum;
 
   const [sortKey, sortOrder] = sort.split(".");
   const validSortKeys = [
@@ -125,40 +28,63 @@ router.get("/", async (req, res) => {
   const orderByClause =
     sortKey && validSortKeys.includes(sortKey) && validOrder.includes(sortOrder)
       ? `ORDER BY ${sortKey} ${sortOrder.toUpperCase()}`
-      : `ORDER BY a.id DESC`; // 기본 정렬
+      : `ORDER BY a.id DESC`;
 
   try {
-    // 총 개수
-    const [[{ count }]] = await db.query(
-      `
-  SELECT COUNT(*) as count
-  FROM account a
-  JOIN bank b ON a.bank_id = b.id
-  WHERE a.delete_date IS NULL
-  AND (b.name LIKE ? OR a.account_num LIKE ?)
-  `,
-      [`%${keyword}%`, `%${keyword}%`]
-    );
+    let count = 0;
+    let rows;
 
-    // 페이지 데이터
-    const [rows] = await db.query(
-      `
-  SELECT
-    a.id, a.account_num, a.balance, a.create_date,a.account_type, a.bank_id,
-    b.name AS bank_name,
-    u.name AS user_name
-  FROM account a
-  JOIN bank b ON a.bank_id = b.id
-  JOIN user u ON a.user_id = u.id
-  WHERE a.delete_date IS NULL
-  AND (b.name LIKE ? OR a.account_num LIKE ?)
-  ${orderByClause}
-  LIMIT ? OFFSET ?
-  `,
-      [`%${keyword}%`, `%${keyword}%`, Number(limit), Number(offset)]
-    );
+    // 1. 페이징 O → count + LIMIT + OFFSET
+    if (isPaging) {
+      const [[{ count: total }]] = await db.query(
+        `
+        SELECT COUNT(*) as count
+        FROM account a
+        JOIN bank b ON a.bank_id = b.id
+        WHERE a.delete_date IS NULL
+        AND (b.name LIKE ? OR a.account_num LIKE ?)
+        `,
+        [`%${keyword}%`, `%${keyword}%`]
+      );
+      count = total;
 
-    // 응답 포맷 맞춰서 리턴
+      [rows] = await db.query(
+        `
+        SELECT
+          a.id, a.account_num, a.balance, a.create_date,a.account_type, a.bank_id,
+          b.name AS bank_name,
+          u.name AS user_name
+        FROM account a
+        JOIN bank b ON a.bank_id = b.id
+        JOIN user u ON a.user_id = u.id
+        WHERE a.delete_date IS NULL
+        AND (b.name LIKE ? OR a.account_num LIKE ?)
+        ${orderByClause}
+        LIMIT ? OFFSET ?
+        `,
+        [`%${keyword}%`, `%${keyword}%`, limitNum, offset]
+      );
+    }
+    // 2. 페이징 X → 전체 데이터 조회
+    else {
+      [rows] = await db.query(
+        `
+        SELECT
+          a.id, a.account_num, a.balance, a.create_date,a.account_type, a.bank_id,
+          b.name AS bank_name,
+          u.name AS user_name
+        FROM account a
+        JOIN bank b ON a.bank_id = b.id
+        JOIN user u ON a.user_id = u.id
+        WHERE a.delete_date IS NULL
+        AND (b.name LIKE ? OR a.account_num LIKE ?)
+        ${orderByClause}
+        `,
+        [`%${keyword}%`, `%${keyword}%`]
+      );
+      count = rows.length;
+    }
+
     res.status(200).json({
       code: 200,
       count,
@@ -166,8 +92,8 @@ router.get("/", async (req, res) => {
       message: "success",
       result: {
         totalItems: count,
-        totalPages: Math.ceil(count / limit),
-        currentPage: Number(page),
+        totalPages: isPaging ? Math.ceil(count / limitNum) : 1,
+        currentPage: isPaging ? pageNum : 1,
         list: rows,
       },
     });
@@ -181,6 +107,80 @@ router.get("/", async (req, res) => {
     });
   }
 });
+// router.get("/", async (req, res) => {
+//   const { keyword = "", limit = 10, page = 1, sort = "" } = req.query;
+
+//   const offset = (page - 1) * limit;
+
+//   const [sortKey, sortOrder] = sort.split(".");
+//   const validSortKeys = [
+//     "bank_name",
+//     "account_num",
+//     "balance",
+//     "create_date",
+//     "account_type",
+//   ];
+//   const validOrder = ["asc", "desc"];
+
+//   const orderByClause =
+//     sortKey && validSortKeys.includes(sortKey) && validOrder.includes(sortOrder)
+//       ? `ORDER BY ${sortKey} ${sortOrder.toUpperCase()}`
+//       : `ORDER BY a.id DESC`; // 기본 정렬
+
+//   try {
+//     // 총 개수
+//     const [[{ count }]] = await db.query(
+//       `
+//   SELECT COUNT(*) as count
+//   FROM account a
+//   JOIN bank b ON a.bank_id = b.id
+//   WHERE a.delete_date IS NULL
+//   AND (b.name LIKE ? OR a.account_num LIKE ?)
+//   `,
+//       [`%${keyword}%`, `%${keyword}%`]
+//     );
+
+//     // 페이지 데이터
+//     const [rows] = await db.query(
+//       `
+//   SELECT
+//     a.id, a.account_num, a.balance, a.create_date,a.account_type, a.bank_id,
+//     b.name AS bank_name,
+//     u.name AS user_name
+//   FROM account a
+//   JOIN bank b ON a.bank_id = b.id
+//   JOIN user u ON a.user_id = u.id
+//   WHERE a.delete_date IS NULL
+//   AND (b.name LIKE ? OR a.account_num LIKE ?)
+//   ${orderByClause}
+//   LIMIT ? OFFSET ?
+//   `,
+//       [`%${keyword}%`, `%${keyword}%`, Number(limit), Number(offset)]
+//     );
+
+//     // 응답 포맷 맞춰서 리턴
+//     res.status(200).json({
+//       code: 200,
+//       count,
+//       httpStatus: "OK",
+//       message: "success",
+//       result: {
+//         totalItems: count,
+//         totalPages: Math.ceil(count / limit),
+//         currentPage: Number(page),
+//         list: rows,
+//       },
+//     });
+//   } catch (err) {
+//     console.error("Error:", err);
+//     res.status(500).json({
+//       code: 500,
+//       count: 0,
+//       httpStatus: "INTERNAL_SERVER_ERROR",
+//       message: err.message,
+//     });
+//   }
+// });
 
 // 계좌 상세 조회
 // GET /account/:id

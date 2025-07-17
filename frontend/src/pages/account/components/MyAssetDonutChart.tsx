@@ -2,10 +2,10 @@ import { Empty } from "antd";
 import { Loader } from "../../../components/common/Loader";
 import { PieChart } from "../../../components/common/PieChart";
 import { SectionTitle } from "../../../components/common/SectionTitle";
-import { useGetAccountHistoryAll } from "../../../hooks/useGetAccountHistoryAll";
+import { useGetAccount } from "../../../hooks/useGetAccount";
 
 export const MyAssetDonutChart = () => {
-  const { data, isPending } = useGetAccountHistoryAll({});
+  const { data, isPending } = useGetAccount({});
 
   return (
     <div>

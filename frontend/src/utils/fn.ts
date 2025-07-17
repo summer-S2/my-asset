@@ -15,7 +15,7 @@ export const isEmpty = (obj: any): boolean => {
  * 2억 3400만 500원
  */
 export const formatKoreanCurrency = (amount: number): string => {
-  if (amount === 0) return "0원";
+  if (amount === 0 || !amount) return "0원";
 
   const isNegative = amount < 0;
   const absAmount = Math.abs(amount); // 절댓값 처리
@@ -31,7 +31,7 @@ export const formatKoreanCurrency = (amount: number): string => {
   if (units.만) result += `${units.만.toLocaleString()}만 `;
   if (units.원) result += `${units.원.toLocaleString()}`;
 
-  return (isNegative ? "-" : "") + result.trim() + "원"; // 음수면 '-' 붙이기
+  return (isNegative ? "-" : "") + (result ? result.trim() : "0") + "원"; // 음수면 '-' 붙이기
 };
 
 /**

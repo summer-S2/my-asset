@@ -1,7 +1,7 @@
 import { Pie } from "@visx/shape";
 import { Group } from "@visx/group";
 import { Text } from "@visx/text";
-import type { History } from "../../types/api";
+import type { Account } from "../../types/api";
 import { CHART_COLORS } from "../../utils/constants";
 import { useEffect, useState } from "react";
 import type { ChartDataType } from "../../types/common";
@@ -11,13 +11,16 @@ import { localPoint } from "@visx/event";
 import { useAssetChartData } from "../../hooks/useAssetChartData";
 
 interface Props {
-  data: History[];
+  data: Account[];
   width?: number;
   height?: number;
 }
 
 export const PieChart = ({ data, width = 400, height = 400 }: Props) => {
-  const { pieData } = useAssetChartData(data);
+  const { pieData } = useAssetChartData({
+    accountData: data,
+    historyData: null,
+  });
   const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } =
     useTooltip<ChartDataType>();
   const radius = Math.min(width, height) / 2;

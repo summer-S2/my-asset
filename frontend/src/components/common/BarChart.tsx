@@ -23,7 +23,10 @@ interface Props {
 const margin = { top: 0, right: 0, bottom: 10, left: 0 };
 
 export const BarChart = ({ data, width = 400, height = 400 }: Props) => {
-  const { chartData } = useAssetChartData(data);
+  const { chartData } = useAssetChartData({
+    historyData: data,
+    accountData: null,
+  });
   const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } =
     useTooltip<BarGroupChartDataType>();
 
@@ -83,7 +86,7 @@ export const BarChart = ({ data, width = 400, height = 400 }: Props) => {
                           x={bar.x}
                           y={bar.y}
                           width={bar.width}
-                          height={bar.height}
+                          height={bar.height < 0 ? 0 : bar.height}
                           fill={bar.color}
                           onMouseMove={(event) => {
                             const coords = localPoint(event);

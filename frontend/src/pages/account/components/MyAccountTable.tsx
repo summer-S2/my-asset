@@ -179,12 +179,11 @@ export const MyAccountTable = ({ setOpenAddModal }: Props) => {
         </div>
 
         <form onSubmit={handleSubmit} className="flex justify-end">
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-80">
             <Input
               id="input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              width={`200px`}
               placeholder="은행명, 계좌번호 검색"
               allowClear
               disabled={!keyword && data?.result.totalItems === 0}

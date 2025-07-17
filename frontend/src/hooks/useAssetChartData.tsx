@@ -1,31 +1,33 @@
 import { useEffect, useState } from "react";
-import type { History } from "../types/api";
+import type { Account, History } from "../types/api";
 import type { BarGroupChartDataType, ChartDataType } from "../types/common";
 import { ACCOUNT_TYPE_MAP } from "../utils/constants";
 
-export const useAssetChartData = (data: History[] | null) => {
+interface Props {
+  historyData: History[] | null;
+  accountData: Account[] | null;
+}
+
+export const useAssetChartData = ({ historyData, accountData }: Props) => {
   const [chartData, setChartData] = useState<BarGroupChartDataType[]>([]);
   const [pieData, setPieData] = useState<ChartDataType[]>([]);
 
-  // console.log(chartData);
-  // console.log(pieData);
-
+  // 히스토리 기반 막대차트 데이터 계산
   useEffect(() => {
-    if (data) {
-      const grouped = data.reduce<Record<string, Record<number, number>>>(
-        (prev, cur) => {
-          const month = cur.transaction_date.slice(0, 7);
-          const type = cur.account_type; // number (1~4)
-          const sign = cur.transaction_type === "DEPOSIT" ? 1 : -1;
+    if (historyData) {
+      const grouped = historyData.reduce<
+        Record<string, Record<number, number>>
+      >((prev, cur) => {
+        const month = cur.transaction_date.slice(0, 7);
+        const type = cur.account_type;
+        const sign = cur.transaction_type === "DEPOSIT" ? 1 : -1;
 
-          if (!prev[month]) prev[month] = {};
-          if (!prev[month][type]) prev[month][type] = 0;
+        if (!prev[month]) prev[month] = {};
+        if (!prev[month][type]) prev[month][type] = 0;
 
-          prev[month][type] += sign * cur.amount;
-          return prev;
-        },
-        {}
-      );
+        prev[month][type] += sign * cur.amount;
+        return prev;
+      }, {});
 
       const monthlyList = Object.entries(grouped).map(([date, accountObj]) => {
         const row: any = { date };
@@ -38,20 +40,33 @@ export const useAssetChartData = (data: History[] | null) => {
         return row;
       });
 
-      // console.log(monthlyList);
+      setChartData(monthlyList.sort((a, b) => a.date.localeCompare(b.date)));
+    }
+  }, [historyData]);
 
-      const donut = Object.keys(ACCOUNT_TYPE_MAP).map((key) => {
+  //  계좌 기반 파이차트 데이터 계산
+  useEffect(() => {
+    if (accountData) {
+      const sumByType = accountData.reduce<Record<number, number>>(
+        (acc, cur) => {
+          if (!acc[cur.account_type]) acc[cur.account_type] = 0;
+          acc[cur.account_type] += cur.balance;
+          return acc;
+        },
+        {}
+      );
+
+      const donut = Object.entries(ACCOUNT_TYPE_MAP).map(([key, label]) => {
         const type = Number(key);
         return {
-          label: ACCOUNT_TYPE_MAP[type],
-          value: monthlyList.reduce((sum, item) => sum + (item[type] || 0), 0),
+          label,
+          value: sumByType[type] || 0,
         };
       });
 
-      setChartData(monthlyList.sort((a, b) => a.date.localeCompare(b.date)));
       setPieData(donut);
     }
-  }, [data]);
+  }, [accountData]);
 
   return { chartData, pieData };
 };

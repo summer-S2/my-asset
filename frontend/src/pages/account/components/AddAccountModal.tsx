@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { ACCOUNT_TYPE_OPTION, BANK_OPTION } from "../../../utils/constants";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ErrorText } from "../../../components/common/ErrorText";
+import { formatKoreanCurrency } from "../../../utils/fn";
 
 interface Props {
   open: boolean;
@@ -20,6 +21,7 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { isValid, errors },
   } = useForm<AddAccountSchema>({
     mode: "onChange",
@@ -115,9 +117,16 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
             </div>
 
             <div>
-              <label className="pl-1" htmlFor="balance">
-                잔액
-              </label>
+              <div className="flex w-full justify-between">
+                <label className="pl-1" htmlFor="balance">
+                  잔액
+                </label>
+                {watch("balance") && (
+                  <p className="text-xs text-gray-400">
+                    {formatKoreanCurrency(watch("balance"))}
+                  </p>
+                )}
+              </div>
               <Controller
                 name={"balance"}
                 control={control}
