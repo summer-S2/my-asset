@@ -5,6 +5,7 @@ import { Alert } from "./components/common/Alert";
 import { useEffect } from "react";
 import { useWindowSize } from "@reactuses/core";
 import { theme } from "./styles/antDesignToken";
+import { Confirm } from "./components/common/Confirm";
 
 function App() {
   const { height } = useWindowSize();
@@ -19,6 +20,7 @@ function App() {
     <ConfigProvider theme={theme}>
       <RouterProvider router={router} />
       <Alert />
+      <Confirm />
     </ConfigProvider>
   );
 }

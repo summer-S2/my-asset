@@ -39,7 +39,7 @@ export const Alert = () => {
         {/* 모달 바디 */}
         <div>
           {/* 메시지 */}
-          <pre className="flex-center whitespace-pre-wrap text-center font-['Pretendard'] text-BODY_1 leading-[21px]">
+          <pre className="flex-center whitespace-pre-wrap text-center font-['Pretendard'] leading-[21px]">
             {message}
           </pre>
         </div>

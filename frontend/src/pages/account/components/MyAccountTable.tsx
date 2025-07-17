@@ -14,6 +14,8 @@ import type { Account } from "../../../types/api";
 import { ACCOUNT_TYPE_MAP } from "../../../utils/constants";
 import { useDeleteAccount } from "../../../hooks/useDeleteAccount";
 import { useUpdateSearchParams } from "../../../hooks/useUpdateSearchParams";
+import { DeleteIcon } from "../../../assets/icons/DeleteIcon";
+import { useConfirmStore } from "../../../stores/confirmStore";
 
 interface Props {
   setOpenAddModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,6 +24,7 @@ interface Props {
 export const MyAccountTable = ({ setOpenAddModal }: Props) => {
   const navigate = useNavigate();
   const columnHelper = createColumnHelper<Account>();
+  const { openConfirm } = useConfirmStore();
   const { updateParams, searchParams } = useUpdateSearchParams();
   const page = Number(searchParams.get("page") || 1);
   const keyword = searchParams.get("keyword") || "";
@@ -123,16 +126,28 @@ export const MyAccountTable = ({ setOpenAddModal }: Props) => {
       id: "delete",
       header: () => <div className="flex-center">{"삭제"}</div>,
       cell: ({ row }: { row: any }) => (
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            del(row.original.id);
-          }}
-          className="flex-center cursor-pointer w-full"
-          loading={delIsPending}
-        >
-          삭제
-        </Button>
+        <div className="flex-center w-full">
+          <Button
+            className=""
+            shape="circle"
+            color="primary"
+            variant="solid"
+            icon={
+              <div className="flex-center">
+                <DeleteIcon />
+              </div>
+            }
+            onClick={(e) => {
+              e.stopPropagation();
+              openConfirm({
+                title: "계좌를 삭제하시겠습니까?",
+                message: `확인 버튼을 누르면 계좌 정보가 영구히 삭제됩니다.\n삭제된 데이터는 복구할 수 없습니다.`,
+                onNext: () => del(row.original.id),
+              });
+            }}
+            loading={delIsPending}
+          />
+        </div>
       ),
     },
   ];

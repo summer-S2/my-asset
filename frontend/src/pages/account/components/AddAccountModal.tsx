@@ -10,6 +10,7 @@ import { usePostAccount } from "../../../hooks/usePostAccount";
 import { useEffect } from "react";
 import { ACCOUNT_TYPE_OPTION, BANK_OPTION } from "../../../utils/constants";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { ErrorText } from "../../../components/common/ErrorText";
 
 interface Props {
   open: boolean;
@@ -50,8 +51,8 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
     }
   }, [isSuccess]);
 
-  console.log(isValid);
-  console.log(errors);
+  // console.log(isValid);
+  // console.log(errors);
 
   return (
     <ModalLayout open={open} setOpen={setOpen}>
@@ -78,7 +79,7 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                     options={[
                       {
                         value: 0,
-                        label: "은행을 선택해주세요.",
+                        label: "은행을 선택해 주세요.",
                         disabled: true,
                       },
                       ...BANK_OPTION,
@@ -102,7 +103,7 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                     options={[
                       {
                         value: 0,
-                        label: "자산 종류를 선택해주세요.",
+                        label: "자산 종류를 선택해 주세요.",
                         disabled: true,
                       },
                       ...ACCOUNT_TYPE_OPTION,
@@ -124,18 +125,19 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                   <Input
                     size="large"
                     id={"balance"}
-                    placeholder="잔액을 입력해주세요."
+                    placeholder="잔액을 입력해 주세요."
                     status={!!errors.balance ? "error" : ""}
+                    type="number"
                     {...field}
                   />
                 )}
               />
-              <p>{errors.balance?.message}</p>
+              <ErrorText text={errors.balance?.message} />
             </div>
 
             <div>
               <label className="pl-1" htmlFor="account_num">
-                계좌 번호
+                계좌번호
               </label>
               <Controller
                 name={"account_num"}
@@ -144,13 +146,14 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                   <Input
                     size="large"
                     id={"account_num"}
-                    placeholder="계좌 번호를 입력해주세요."
+                    placeholder="계좌번호를 입력해 주세요."
                     status={!!errors.account_num ? "error" : ""}
+                    type="number"
                     {...field}
                   />
                 )}
               />
-              <p>{errors.account_num?.message}</p>
+              <ErrorText text={errors.account_num?.message} />
             </div>
           </form>
         </div>

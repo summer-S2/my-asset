@@ -158,7 +158,11 @@ export const AccountHistoryTable = ({ accountId }: Props) => {
         </div>
       ) : (
         <div className="flex-grow flex-center">
-          <Empty description={`데이터가 없습니다.`} />
+          <Empty
+            description={
+              keyword ? `조회 결과가 없습니다.` : `입출금 내역이 없습니다.`
+            }
+          />
         </div>
       )}
     </div>

@@ -15,7 +15,11 @@ interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export const EditAccountModal = ({ data, open, setOpen }: Props) => {
-  const { control, handleSubmit } = useForm<AddAccountSchema>({
+  const {
+    control,
+    handleSubmit,
+    formState: { isDirty },
+  } = useForm<AddAccountSchema>({
     defaultValues: {
       account_num: accountMasking(data.account_num),
       account_type: data.account_type,
@@ -39,7 +43,7 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
     patchAccount(formData);
   };
 
-  // 등록 성공시 모달 닫음
+  // 수정 성공시 모달 닫음
   useEffect(() => {
     if (isSuccess) {
       setOpen(false);
@@ -49,7 +53,7 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
   return (
     <ModalLayout open={open} setOpen={setOpen}>
       <div className="flex flex-col gap-4">
-        <SectionTitle text="계좌 추가하기" classNames="" />
+        <SectionTitle text="계좌 수정하기" classNames="" />
 
         <div>
           <form
@@ -71,7 +75,7 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
                     options={[
                       {
                         value: 0,
-                        label: "은행을 선택해주세요.",
+                        label: "은행을 선택해 주세요.",
                         disabled: true,
                       },
                       ...BANK_OPTION,
@@ -95,7 +99,7 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
                     options={[
                       {
                         value: 0,
-                        label: "자산 종류를 선택해주세요.",
+                        label: "자산 종류를 선택해 주세요.",
                         disabled: true,
                       },
                       ...ACCOUNT_TYPE_OPTION,
@@ -121,7 +125,7 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
 
             <div>
               <label className="pl-1" htmlFor="account_num">
-                계좌 번호
+                계좌번호
               </label>
               <Controller
                 name={"account_num"}
@@ -141,6 +145,7 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
             form="addAccountForm"
             htmlType="submit"
             loading={isPending}
+            disabled={!isDirty}
           >
             저장
           </Button>

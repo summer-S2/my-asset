@@ -17,7 +17,7 @@ export const AccountDetail = () => {
 
   const { data, isPending } = useGetAccountDetail(id ? Number(id) : undefined);
 
-  console.log(data);
+  // console.log(data);
 
   const textStyle = "flex-2 flex items-center";
 

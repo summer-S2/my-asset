@@ -8,6 +8,26 @@ html {
   @apply flex items-center justify-center;
 }
 
+/* 크롬 브라우저의 자동완성 스타일 재정의 */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  box-shadow: 0 0 0 1000px white inset !important;
+  -webkit-text-fill-color: black !important;
+  /* text-fill-color: black !important; */
+}
+
+/* edge - input(password)일때 보여지는 hide/show 버튼 지우기 */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+/* 숫자 인풋 화살표 제거 */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 /* 스크롤 */
 ::-webkit-scrollbar {
   width: 6px;

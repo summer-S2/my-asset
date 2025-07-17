@@ -1,10 +1,12 @@
 import { Button } from "antd";
 import { useAuthStore } from "../../stores/authStore";
 import { useNavigate } from "react-router-dom";
+import { useConfirmStore } from "../../stores/confirmStore";
 
 export const Header = () => {
   const navigate = useNavigate();
   const { user, logoutUser, setUser } = useAuthStore();
+  const { openConfirm } = useConfirmStore();
 
   const handleLogout = async () => {
     try {
@@ -26,7 +28,16 @@ export const Header = () => {
         {user && (
           <div className="flex gap-4 items-center">
             <div>{`${user?.displayName ?? "사용자"}`} 님</div>
-            <Button htmlType="button" onClick={handleLogout}>
+            <Button
+              htmlType="button"
+              onClick={() => {
+                openConfirm({
+                  title: "로그아웃하시겠습니까?",
+                  message: `확인 버튼을 누르면 로그아웃됩니다.`,
+                  onNext: handleLogout,
+                });
+              }}
+            >
               로그아웃
             </Button>
           </div>

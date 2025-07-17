@@ -32,7 +32,7 @@ export const Login = () => {
     } catch (err) {
       openAlert({
         title: "로그인 실패",
-        message: "이메일 혹은 비밀번호를 다시 한번 확인해주세요.",
+        message: "이메일 혹은 비밀번호를 다시 한번 확인해 주세요.",
       });
     } finally {
       setIsLoading(false);
@@ -80,7 +80,7 @@ export const Login = () => {
                 <Input
                   size="large"
                   id={"username"}
-                  placeholder="아이디를 입력해주세요."
+                  placeholder="아이디를 입력해 주세요."
                   {...field}
                 />
               )}
@@ -92,7 +92,7 @@ export const Login = () => {
                 <Input.Password
                   size="large"
                   id={"password"}
-                  placeholder="비밀번호를 입력해주세요."
+                  placeholder="비밀번호를 입력해 주세요."
                   type="password"
                   {...field}
                 />
