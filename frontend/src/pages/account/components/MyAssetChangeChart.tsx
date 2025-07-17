@@ -2,14 +2,11 @@ import { Empty } from "antd";
 import { BarChart } from "../../../components/common/BarChart";
 import { Loader } from "../../../components/common/Loader";
 import { SectionTitle } from "../../../components/common/SectionTitle";
-import type { HistoryData } from "../../../types/api";
+import { useGetAccountHistoryAll } from "../../../hooks/useGetAccountHistoryAll";
 
-interface Props {
-  data: HistoryData[] | null;
-  isLoading?: boolean;
-}
+export const MyAssetChangeChart = () => {
+  const { data, isPending } = useGetAccountHistoryAll({});
 
-export const MyAssetChangeChart = ({ data, isLoading }: Props) => {
   return (
     <div>
       <SectionTitle
@@ -18,10 +15,10 @@ export const MyAssetChangeChart = ({ data, isLoading }: Props) => {
         classNames="py-4"
       />
 
-      {isLoading ? (
+      {isPending ? (
         <Loader />
-      ) : data && data.length > 0 ? (
-        <BarChart data={data} />
+      ) : data && data.result.list.length > 0 ? (
+        <BarChart data={data?.result.list ?? []} />
       ) : (
         <div>
           <Empty description={`데이터가 없습니다.`} />

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useMyassetStore } from "../../stores/myassetStore";
 import { PageLayout } from "../../components/layout/PageLayout";
 import { MyAssetDonutChart } from "./components/MyAssetDonutChart";
 import { MyAssetChangeChart } from "./components/MyAssetChangeChart";
@@ -7,8 +6,6 @@ import { MyAccountTable } from "./components/MyAccountTable";
 import { AddAccountModal } from "./components/AddAccountModal";
 
 export const Account = () => {
-  const { data: fakeData } = useMyassetStore();
-
   const [openAddModal, setOpenAddModal] = useState(false);
 
   // console.log(account);
@@ -27,9 +24,9 @@ export const Account = () => {
         {/* 차트 영역 */}
         <div className="flex justify-evenly flex-col lg:flex-row items-center min-h-[460px]">
           {/* 도넛차트 */}
-          <MyAssetDonutChart data={fakeData} />
+          <MyAssetDonutChart />
           {/* 바차트 */}
-          <MyAssetChangeChart data={fakeData} />
+          <MyAssetChangeChart />
         </div>
 
         {/* 테이블 영역 */}

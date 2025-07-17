@@ -66,6 +66,7 @@ export interface History {
   transaction_type: string; //"WITHDRAWAL"
   transactor: string;
   update_date: string;
+  account_type: number;
 }
 
 export interface GetParams {

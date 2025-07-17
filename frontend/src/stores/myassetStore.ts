@@ -8,6 +8,7 @@ interface MyassetState {
 }
 
 export const useMyassetStore = create<MyassetState>((set) => ({
-  data: getHistoryList(100),
+  // data: getHistoryList(100),
+  data: [],
   setData: (newData) => set({ data: newData }),
 }));

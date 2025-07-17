@@ -1,4 +1,4 @@
-export const ACCOUNT_TYPE = ["입출금", "대출", "증권", "저축"] as const;
+// export const ACCOUNT_TYPE = ["입출금", "대출", "증권", "저축"] as const;
 
 export const ACCOUNT_KEY = ["deposit", "loan", "investment", "saving"] as const;
 
@@ -46,6 +46,8 @@ export const ACCOUNT_TYPE_MAP: Record<number, string> = {
   3: "증권",
   4: "연금",
 };
+
+export type ACCOUNT_TYPE = keyof typeof ACCOUNT_TYPE_MAP;
 
 export const TRANSACTION_TYPE_MAP: Record<string, string> = {
   DEPOSIT: "입금",

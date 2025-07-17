@@ -10,9 +10,9 @@ import { useAlertStore } from "../stores/alertStore";
 
 export const Login = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-
+  const { loginWithGoogle, loginWithEmail } = useAuthStore();
   const { openAlert } = useAlertStore();
+  const [isLoading, setIsLoading] = useState(false);
 
   const { control, handleSubmit, watch } = useForm<LoginSchema>({
     defaultValues: {
@@ -20,7 +20,6 @@ export const Login = () => {
       password: "",
     },
   });
-  const { loginWithGoogle, loginWithEmail } = useAuthStore();
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
     if (isLoading) return;

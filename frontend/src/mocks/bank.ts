@@ -1,9 +1,9 @@
 import { Faker, ko, en } from "@faker-js/faker";
 import type { HistoryData } from "../types/api";
-import { ACCOUNT_TYPE, BANK_TYPE, TRANSACTION_TYPE } from "../utils/constants";
+import { BANK_TYPE, TRANSACTION_TYPE } from "../utils/constants";
 
 const faker = new Faker({ locale: [ko, en] });
-
+const ACCOUNT_TYPE = ["입출금", "대출", "증권", "저축"] as const;
 // 히스토리 데이터 생성
 const getHistoryData = (): HistoryData => ({
   transactionId: faker.string.uuid(),
@@ -12,6 +12,7 @@ const getHistoryData = (): HistoryData => ({
   transactionType: faker.helpers.arrayElement(TRANSACTION_TYPE),
   description: faker.lorem.words(2),
   accountType: faker.helpers.arrayElement(ACCOUNT_TYPE),
+  // accountType: faker.helpers.arrayElement([]),
   bankName: faker.helpers.arrayElement(BANK_TYPE),
   sender: faker.person.fullName(),
   //   accountNumber: faker.finance.accountNumber(),

@@ -172,7 +172,11 @@ export const MyAccountTable = ({ setOpenAddModal }: Props) => {
         </Button>
       </div>
       <div className="flex justify-between items-center px-4">
-        <div>{`조회된 데이터: ${data?.result.totalItems ?? 0}건`}</div>
+        <div>
+          {data?.result && data?.result?.list.length > 0
+            ? `조회된 데이터: ${data?.result.totalItems ?? 0}건`
+            : ``}
+        </div>
 
         <form onSubmit={handleSubmit} className="flex justify-end">
           <div className="flex gap-2">

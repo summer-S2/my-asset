@@ -1,7 +1,7 @@
 import { Pie } from "@visx/shape";
 import { Group } from "@visx/group";
 import { Text } from "@visx/text";
-import type { HistoryData } from "../../types/api";
+import type { History } from "../../types/api";
 import { CHART_COLORS } from "../../utils/constants";
 import { useEffect, useState } from "react";
 import type { ChartDataType } from "../../types/common";
@@ -11,7 +11,7 @@ import { localPoint } from "@visx/event";
 import { useAssetChartData } from "../../hooks/useAssetChartData";
 
 interface Props {
-  data: HistoryData[];
+  data: History[];
   width?: number;
   height?: number;
 }
@@ -25,8 +25,10 @@ export const PieChart = ({ data, width = 400, height = 400 }: Props) => {
   const [total, setTotal] = useState(0);
 
   //   console.log(data);
-  //   console.log(pieData);
+  // console.log(pieData);
+
   useEffect(() => {
+    setTotal(0);
     if (pieData.length > 0) {
       pieData.map((el) => {
         setTotal((prev) => prev + el.value);
@@ -36,6 +38,9 @@ export const PieChart = ({ data, width = 400, height = 400 }: Props) => {
 
   return (
     <div className="relative">
+      <div className=" absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-indigo-800">
+        {total ? `총 자산: ${total.toLocaleString()}원` : ""}
+      </div>
       <svg width={width} height={height}>
         <Group top={height / 2} left={width / 2}>
           <Pie

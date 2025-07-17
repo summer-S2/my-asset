@@ -1,4 +1,4 @@
-import type { HistoryData } from "../../types/api";
+import type { History } from "../../types/api";
 import { BarGroup } from "@visx/shape";
 import { Group } from "@visx/group";
 import { Text } from "@visx/text";
@@ -6,13 +6,16 @@ import { useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
 import { scaleBand, scaleLinear, scaleOrdinal } from "@visx/scale";
 import type { BarGroupChartDataType } from "../../types/common";
-import { ACCOUNT_TYPE, CHART_COLORS } from "../../utils/constants";
+import { CHART_COLORS, ACCOUNT_TYPE_MAP } from "../../utils/constants";
 import { useAssetChartData } from "../../hooks/useAssetChartData";
-import { formatKoreanCurrency } from "../../utils/fn";
+
 import { Fragment } from "react/jsx-runtime";
+import { formatKoreanCurrency } from "../../utils/fn";
+
+const accountTypeKeys = Object.keys(ACCOUNT_TYPE_MAP).map(Number);
 
 interface Props {
-  data: HistoryData[] | null;
+  data: History[] | null;
   width?: number;
   height?: number;
 }
@@ -24,8 +27,8 @@ export const BarChart = ({ data, width = 400, height = 400 }: Props) => {
   const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } =
     useTooltip<BarGroupChartDataType>();
 
-  const colorScale = scaleOrdinal<string, string>({
-    domain: [...ACCOUNT_TYPE],
+  const colorScale = scaleOrdinal<number, string>({
+    domain: [...accountTypeKeys],
     range: CHART_COLORS,
   });
 
@@ -34,15 +37,15 @@ export const BarChart = ({ data, width = 400, height = 400 }: Props) => {
     padding: 0.2,
   });
 
-  const x1Scale = scaleBand<string>({
-    domain: [...ACCOUNT_TYPE],
+  const x1Scale = scaleBand<number>({
+    domain: [...accountTypeKeys],
     padding: 0.1,
   });
 
   const yScale = scaleLinear<number>({
     domain: [
       0,
-      Math.max(...chartData.flatMap((d) => ACCOUNT_TYPE.map((k) => d[k]))),
+      Math.max(...chartData.flatMap((d) => accountTypeKeys.map((k) => d[k]))),
     ] as [number, number],
     nice: true,
   });
@@ -57,7 +60,7 @@ export const BarChart = ({ data, width = 400, height = 400 }: Props) => {
         <Group>
           <BarGroup
             data={chartData}
-            keys={[...ACCOUNT_TYPE]}
+            keys={[...accountTypeKeys]}
             height={height - margin.top - margin.bottom}
             x0={(d) => d.date}
             x0Scale={x0Scale}
@@ -114,13 +117,18 @@ export const BarChart = ({ data, width = 400, height = 400 }: Props) => {
       {tooltipData && (
         <TooltipWithBounds left={tooltipLeft} top={tooltipTop}>
           <div className={`z-30`}>{`${tooltipData.date}`}</div>
-          {ACCOUNT_TYPE.map((el) => (
+          {accountTypeKeys.map((el) => (
             <div
               key={el}
               style={{
                 color: colorScale(el),
               }}
-            >{`${el}: ${formatKoreanCurrency(tooltipData[el])}`}</div>
+            >
+              {`${ACCOUNT_TYPE_MAP[el]}: ${formatKoreanCurrency(
+                tooltipData[el]
+              )}`}
+              {/* <div>{tooltipData[el]}</div> */}
+            </div>
           ))}
         </TooltipWithBounds>
       )}

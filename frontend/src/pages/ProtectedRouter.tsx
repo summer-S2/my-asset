@@ -19,7 +19,10 @@ export const ProtectedRouter = ({ children }: Props) => {
       setUser(user);
 
       if (!user && location.pathname !== "/login") {
-        navigate("/login");
+        navigate("/login", { replace: true });
+      }
+      if (user && location.pathname === "/login") {
+        navigate("/", { replace: true });
       }
 
       setIsLoading(false);

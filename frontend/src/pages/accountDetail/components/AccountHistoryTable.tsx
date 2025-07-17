@@ -115,7 +115,11 @@ export const AccountHistoryTable = ({ accountId }: Props) => {
   return (
     <div className="w-full h-full flex flex-col gap-2">
       <div className="flex justify-between items-center px-4">
-        <div>{`조회된 데이터: ${data?.result.totalItems ?? 0}건`}</div>
+        <div>
+          {data?.result && data?.result?.list.length > 0
+            ? `조회된 데이터: ${data?.result.totalItems ?? 0}건`
+            : ``}
+        </div>
 
         <form onSubmit={handleSubmit} className="flex justify-end">
           {

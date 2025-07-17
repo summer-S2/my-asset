@@ -65,3 +65,19 @@ export const toggleSort = <T>(
     return { key: nextOrder ? key : null, order: nextOrder };
   });
 };
+
+/**
+ * 파라미터 객체 전달받아서 쿼리스트링으로 리턴해주는 함수
+ */
+export const objectToQueryString = (params: Record<string, any>): string => {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      searchParams.append(key, String(value));
+    }
+  });
+
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+};

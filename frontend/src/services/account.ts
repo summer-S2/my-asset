@@ -4,14 +4,18 @@ import type {
   GetParams,
   ListData,
 } from "../types/api";
+import { objectToQueryString } from "../utils/fn";
 import apiClient from "./apiClient";
 
 // 계좌 목록 조회
 export const getAccount = async (params: GetParams) => {
+  const query = objectToQueryString(params);
+
   const response = await apiClient.get<CustomAxiosRes<ListData<Account>>>(
-    `/account?page=${params.page}&limit=${params.limit}${
-      params.keyword ? `&keyword=${params.keyword}` : ``
-    }${params.sort ? `&sort=${params.sort}` : ``}`
+    `/account${query}`
+    // `/account?page=${params.page}&limit=${params.limit}${
+    //   params.keyword ? `&keyword=${params.keyword}` : ``
+    // }${params.sort ? `&sort=${params.sort}` : ``}`
   );
 
   return response.data;

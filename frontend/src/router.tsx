@@ -8,7 +8,14 @@ import { AccountDetail } from "./pages/accountDetail/AccountDetail";
 import { Account } from "./pages/account/Account";
 
 export const router = createBrowserRouter([
-  { path: "/login", element: <Login /> },
+  {
+    path: "/login",
+    element: (
+      <ProtectedRouter>
+        <Login />
+      </ProtectedRouter>
+    ),
+  },
   {
     path: "/",
     element: (

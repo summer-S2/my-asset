@@ -15,13 +15,17 @@ export type ChartDataType = {
   value: number;
 };
 
+// export type BarGroupChartDataType = {
+//   date: string; // 날짜(월)
+//   입출금: number;
+//   대출: number;
+//   증권: number;
+//   저축: number;
+// };
+
 export type BarGroupChartDataType = {
-  date: string; // 날짜(월)
-  입출금: number;
-  대출: number;
-  증권: number;
-  저축: number;
-};
+  date: string;
+} & Record<number, number>;
 
 export type OrderType = "asc" | "desc" | null;
 
