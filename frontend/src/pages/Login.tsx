@@ -11,6 +11,7 @@ import { useAlertStore } from "../stores/alertStore";
 export const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+
   const { openAlert } = useAlertStore();
 
   const { control, handleSubmit, watch } = useForm<LoginSchema>({
@@ -46,7 +47,10 @@ export const Login = () => {
       await loginWithGoogle();
       navigate("/");
     } catch (err) {
-      alert("로그인에 실패했습니다.");
+      openAlert({
+        title: "로그인 실패",
+        message: "로그인에 실패했습니다.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -54,11 +58,19 @@ export const Login = () => {
 
   return (
     <PageLayout withoutHeader>
-      <div className="w-full h-full bg-indigo-100">
-        <div className="flex flex-col items-center p-4 gap-4 w-full">
-          <h1 className="font-bold text-4xl">로그인</h1>
+      <div
+        className="w-full h-full mx-auto"
+        style={{
+          paddingTop: "calc(var(--vh, 1vh) * 20)",
+          paddingBottom: "calc(var(--vh, 1vh) * 20)",
+        }}
+      >
+        <div className="flex flex-col items-center p-6 gap-6 w-full max-w-xl mx-auto border-1 border-gray-200 rounded-4xl shadow-xl">
+          {/* 로고 */}
+          <div className="text-3xl py-6 font-bold">My Asset 💸</div>
+          {/* <h1 className="font-bold text-2xl">로그인</h1> */}
           <form
-            className="flex flex-col gap-4 w-full max-w-3xl"
+            className="flex flex-col gap-4 w-full "
             onSubmit={handleSubmit(onSubmit)}
           >
             <Controller

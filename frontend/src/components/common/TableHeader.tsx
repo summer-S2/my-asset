@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { SortStateType } from "../../types/common";
 import { SortIcon } from "../../assets/icons/SortIcon";
 import { toggleSort } from "../../utils/fn";
+import { useUpdateSearchParams } from "../../hooks/useUpdateSearchParams";
 
 interface Props<T> {
   contents: ReactNode;
@@ -19,11 +20,16 @@ export const TableHeader = <T,>({
   setSortState,
   sortKey,
 }: Props<T>) => {
+  const { updateParams } = useUpdateSearchParams();
+
   return (
     <div
       onClick={
         sortKey && setSortState
-          ? () => toggleSort(sortKey, setSortState)
+          ? () => {
+              toggleSort(sortKey, setSortState);
+              updateParams({ page: 1 });
+            }
           : onClick
       }
       className={classNames("flex-center", {

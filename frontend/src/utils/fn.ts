@@ -10,7 +10,9 @@ export const isEmpty = (obj: any): boolean => {
 };
 
 /**
- * 숫자를 '2억 3400만원 500원'처럼 한글 화폐 형식으로 변환
+ * 숫자를 한글 화폐 형식으로 변환
+ *
+ * 2억 3400만 500원
  */
 export const formatKoreanCurrency = (amount: number): string => {
   if (amount === 0) return "0원";

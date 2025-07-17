@@ -4,42 +4,44 @@ import type { History } from "../../../types/api";
 import { useState } from "react";
 import type { SortStateType } from "../../../types/common";
 import { Loader } from "../../../components/common/Loader";
-import { Button, Input, Pagination } from "antd";
+import { Button, Empty, Input, Pagination } from "antd";
 import { TableHeader } from "../../../components/common/TableHeader";
 import { useGetAccountHistory } from "../../../hooks/useGetAccountHistory";
 import { TRANSACTION_TYPE_MAP } from "../../../utils/constants";
+import { useUpdateSearchParams } from "../../../hooks/useUpdateSearchParams";
 
 interface Props {
   accountId: number;
   // data: History[];
-  isLoading?: boolean;
 }
 
-export const AccountHistoryTable = ({ accountId, isLoading }: Props) => {
+export const AccountHistoryTable = ({ accountId }: Props) => {
   const columnHelper = createColumnHelper<History>();
-  // const [filteredData, setFilteredData] = useState<HistoryData[]>([]);
-  const [page, setPage] = useState(1);
-  const [limit, _setLimit] = useState(10);
-  // const [pagedDate, setPagedData] = useState<HistoryData[]>([]); // 페이징 처리된 데이터
-  const [searchKeyword, setSearchKeyword] = useState(""); // 검색어
-  const [input, setInput] = useState("");
+  const { updateParams, searchParams } = useUpdateSearchParams();
+  const page = Number(searchParams.get("page") || 1);
+  const keyword = searchParams.get("keyword") || "";
+  const limit = Number(searchParams.get("limit") || 10);
+  const [input, setInput] = useState(keyword);
   const [sortState, setSortState] = useState<SortStateType<History>>({
     // 기본 > 날짜별 내림차순
-    key: "transaction_date",
-    order: "desc",
+    // key: "transaction_date",
+    // order: "desc",
+    key: null,
+    order: null,
   });
 
-  const { data } = useGetAccountHistory({
+  const { data, isPending } = useGetAccountHistory({
     page,
     limit,
-    keyword: searchKeyword,
+    keyword,
     accountId: accountId,
     ...(sortState.order && { sort: `${sortState.key}.${sortState.order}` }),
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSearchKeyword(input);
+    updateParams({ page: 1, keyword: input }); // 검색 시 page 초기화
+    // setSearchKeyword(input);
   };
 
   const columns = [
@@ -116,20 +118,28 @@ export const AccountHistoryTable = ({ accountId, isLoading }: Props) => {
         <div>{`조회된 데이터: ${data?.result.totalItems ?? 0}건`}</div>
 
         <form onSubmit={handleSubmit} className="flex justify-end">
-          <div className="flex gap-2">
-            <Input
-              id="input"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              width={`200px`}
-              placeholder="거래일, 보낸 사람 검색"
-              allowClear
-            />
-            <Button htmlType="submit">조회</Button>
-          </div>
+          {
+            <div className="flex gap-2">
+              <Input
+                id="input"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                width={`200px`}
+                placeholder="거래일, 보낸 사람 검색"
+                allowClear
+                disabled={!keyword && data?.result.totalItems === 0}
+              />
+              <Button
+                htmlType="submit"
+                disabled={!keyword && data?.result.totalItems === 0}
+              >
+                조회
+              </Button>
+            </div>
+          }
         </form>
       </div>
-      {isLoading ? (
+      {isPending ? (
         <Loader />
       ) : data && data.result.list.length > 0 ? (
         <div className="w-full flex-center flex-col gap-4">
@@ -142,11 +152,14 @@ export const AccountHistoryTable = ({ accountId, isLoading }: Props) => {
             current={page}
             total={data.result.totalItems}
             pageSize={limit}
-            onChange={setPage}
+            // onChange={setPage}
+            onChange={(page) => updateParams({ page })}
           />
         </div>
       ) : (
-        <div className="flex-grow flex-center">데이터가 없습니다..</div>
+        <div className="flex-grow flex-center">
+          <Empty description={`데이터가 없습니다.`} />
+        </div>
       )}
     </div>
   );

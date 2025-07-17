@@ -2,7 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { Loader } from "../../../components/common/Loader";
 import { Table } from "../../../components/common/Table";
 import type { SortStateType } from "../../../types/common";
-import { Button, Input, Pagination } from "antd";
+import { Button, Empty, Input, Pagination } from "antd";
 import React, { useState } from "react";
 import { accountMasking, formatKoreanCurrency } from "../../../utils/fn";
 import { useNavigate } from "react-router-dom";
@@ -13,28 +13,29 @@ import { useGetAccount } from "../../../hooks/useGetAccount";
 import type { Account } from "../../../types/api";
 import { ACCOUNT_TYPE_MAP } from "../../../utils/constants";
 import { useDeleteAccount } from "../../../hooks/useDeleteAccount";
+import { useUpdateSearchParams } from "../../../hooks/useUpdateSearchParams";
 
 interface Props {
-  // data: AccountData[] | null;
   setOpenAddModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const MyAccountTable = ({ setOpenAddModal }: Props) => {
   const navigate = useNavigate();
   const columnHelper = createColumnHelper<Account>();
-  const [page, setPage] = useState(1);
-  const [limit, _setLimit] = useState(10);
-  const [searchKeyword, setSearchKeyword] = useState(""); // 검색어
-  const [input, setInput] = useState("");
+  const { updateParams, searchParams } = useUpdateSearchParams();
+  const page = Number(searchParams.get("page") || 1);
+  const keyword = searchParams.get("keyword") || "";
+  const limit = Number(searchParams.get("limit") || 10);
+  const [input, setInput] = useState(keyword);
   const [sortState, setSortState] = useState<SortStateType<Account>>({
     key: null,
     order: null,
   });
 
   const { data, isPending } = useGetAccount({
-    page: page,
-    limit: limit,
-    keyword: searchKeyword,
+    page,
+    limit,
+    keyword,
     ...(sortState.order && { sort: `${sortState.key}.${sortState.order}` }),
   });
 
@@ -42,7 +43,8 @@ export const MyAccountTable = ({ setOpenAddModal }: Props) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSearchKeyword(input);
+    updateParams({ page: 1, keyword: input }); // 검색 시 page 초기화
+    // setSearchKeyword(input);
   };
 
   const columns = [
@@ -166,8 +168,14 @@ export const MyAccountTable = ({ setOpenAddModal }: Props) => {
               width={`200px`}
               placeholder="은행명, 계좌번호 검색"
               allowClear
+              disabled={!keyword && data?.result.totalItems === 0}
             />
-            <Button htmlType="submit">조회</Button>
+            <Button
+              htmlType="submit"
+              disabled={!keyword && data?.result.totalItems === 0}
+            >
+              조회
+            </Button>
           </div>
         </form>
       </div>
@@ -180,7 +188,8 @@ export const MyAccountTable = ({ setOpenAddModal }: Props) => {
             columns={columns}
             // onRowClick={(row) => setSelectedRow(row)}
             onRowClick={(row) => {
-              navigate("/detail", { state: { data: row } });
+              // navigate("/detail", { state: { data: row } });
+              navigate(`/account/${row.id}`);
             }}
             isHeaderClickable
           />
@@ -188,11 +197,14 @@ export const MyAccountTable = ({ setOpenAddModal }: Props) => {
             current={page}
             total={data.result.totalItems}
             pageSize={limit}
-            onChange={setPage}
+            // onChange={setPage}
+            onChange={(page) => updateParams({ page })}
           />
         </div>
       ) : (
-        <div className="w-full h-full flex-center">{`데이터가 없습니다..`}</div>
+        <div className="w-full h-full flex-center">
+          <Empty description={`데이터가 없습니다.`} />
+        </div>
       )}
     </div>
   );

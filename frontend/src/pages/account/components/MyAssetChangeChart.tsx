@@ -1,3 +1,4 @@
+import { Empty } from "antd";
 import { BarChart } from "../../../components/common/BarChart";
 import { Loader } from "../../../components/common/Loader";
 import { SectionTitle } from "../../../components/common/SectionTitle";
@@ -22,7 +23,9 @@ export const MyAssetChangeChart = ({ data, isLoading }: Props) => {
       ) : data && data.length > 0 ? (
         <BarChart data={data} />
       ) : (
-        <div>데이터가 없습니다..</div>
+        <div>
+          <Empty description={`데이터가 없습니다.`} />
+        </div>
       )}
     </div>
   );

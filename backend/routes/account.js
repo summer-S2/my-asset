@@ -4,6 +4,7 @@ const db = require("../db");
 const multer = require("multer");
 const upload = multer();
 
+// 계좌 리스트 조회
 // GET /account?keyword=신한&limit=10&page=1
 router.get("/", async (req, res) => {
   const { keyword = "", limit = 10, page = 1, sort = "" } = req.query;
@@ -80,6 +81,51 @@ router.get("/", async (req, res) => {
   }
 });
 
+// 계좌 상세 조회
+// GET /account/:id
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [rows] = await db.query(
+      `
+      SELECT 
+        a.id, a.account_num, a.balance, a.create_date, a.account_type, a.bank_id,
+        b.name AS bank_name,
+        u.name AS user_name
+      FROM account a
+      JOIN bank b ON a.bank_id = b.id
+      JOIN user u ON a.user_id = u.id
+      WHERE a.id = ? AND a.delete_date IS NULL
+      `,
+      [id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        code: 404,
+        httpStatus: "NOT_FOUND",
+        message: "계좌를 찾을 수 없습니다.",
+      });
+    }
+
+    res.status(200).json({
+      code: 200,
+      httpStatus: "OK",
+      message: "success",
+      result: rows[0],
+    });
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({
+      code: 500,
+      httpStatus: "INTERNAL_SERVER_ERROR",
+      message: err.message,
+    });
+  }
+});
+
+// 계좌 등록
 // POST /account
 router.post("/", upload.none(), async (req, res) => {
   const { account_num, balance = 0, account_type, bank_id, user_id } = req.body;
@@ -142,6 +188,53 @@ router.post("/", upload.none(), async (req, res) => {
   }
 });
 
+// 계좌 수정
+// PATCH /account
+router.patch("/", upload.none(), async (req, res) => {
+  const { bank_id, account_type, id } = req.body;
+
+  if (!id || !bank_id || !account_type) {
+    return res.status(400).json({
+      code: 400,
+      httpStatus: "BAD_REQUEST",
+      message: "필수 항목이 누락되었습니다.",
+    });
+  }
+
+  try {
+    const [result] = await db.query(
+      `
+      UPDATE account
+      SET bank_id = ?, account_type = ?, update_date = NOW()
+      WHERE id = ? AND delete_date IS NULL
+      `,
+      [bank_id, account_type, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        code: 404,
+        httpStatus: "NOT_FOUND",
+        message: "수정할 계좌가 없거나 이미 삭제된 계좌입니다.",
+      });
+    }
+
+    res.status(200).json({
+      code: 200,
+      httpStatus: "OK",
+      message: "계좌가 성공적으로 수정되었습니다.",
+    });
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({
+      code: 500,
+      httpStatus: "INTERNAL_SERVER_ERROR",
+      message: err.message,
+    });
+  }
+});
+
+// 계좌 삭제
 // DELETE /account/:id (소프트 삭제 + 연관 거래 내역도 soft delete)
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
@@ -198,97 +291,5 @@ router.delete("/:id", async (req, res) => {
     conn.release(); // 연결 반납
   }
 });
-
-// PATCH /account
-router.patch("/", upload.none(), async (req, res) => {
-  const { bank_id, account_type, id } = req.body;
-
-  if (!id || !bank_id || !account_type) {
-    return res.status(400).json({
-      code: 400,
-      httpStatus: "BAD_REQUEST",
-      message: "필수 항목이 누락되었습니다.",
-    });
-  }
-
-  try {
-    const [result] = await db.query(
-      `
-      UPDATE account
-      SET bank_id = ?, account_type = ?, update_date = NOW()
-      WHERE id = ? AND delete_date IS NULL
-      `,
-      [bank_id, account_type, id]
-    );
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({
-        code: 404,
-        httpStatus: "NOT_FOUND",
-        message: "수정할 계좌가 없거나 이미 삭제된 계좌입니다.",
-      });
-    }
-
-    res.status(200).json({
-      code: 200,
-      httpStatus: "OK",
-      message: "계좌가 성공적으로 수정되었습니다.",
-    });
-  } catch (err) {
-    console.error("Error:", err);
-    res.status(500).json({
-      code: 500,
-      httpStatus: "INTERNAL_SERVER_ERROR",
-      message: err.message,
-    });
-  }
-});
-
-// DELETE /accounts/:id (소프트 삭제)
-// router.delete("/:id", async (req, res) => {
-//   const { id } = req.params;
-
-//   if (!id) {
-//     return res.status(400).json({
-//       code: 400,
-//       httpStatus: "BAD_REQUEST",
-//       message: "계좌 ID가 필요합니다.",
-//     });
-//   }
-
-//   try {
-//     const [result] = await db.query(
-//       `UPDATE account SET delete_date = NOW() WHERE id = ? AND delete_date IS NULL`,
-//       [id]
-//     );
-
-//     if (result.affectedRows === 0) {
-//       return res.status(404).json({
-//         code: 404,
-//         httpStatus: "NOT_FOUND",
-//         message: "이미 삭제되었거나 존재하지 않는 계좌입니다.",
-//       });
-//     }
-
-//     // 계좌와 연결된 거래 내역도 soft delete
-//     await db.query(
-//       `UPDATE account_history SET delete_date = NOW() WHERE account_id = ? AND delete_date IS NULL`,
-//       [id]
-//     );
-
-//     res.status(200).json({
-//       code: 200,
-//       httpStatus: "OK",
-//       message: "계좌가 성공적으로 삭제(비표시)되었습니다.",
-//     });
-//   } catch (err) {
-//     console.error("Error:", err);
-//     res.status(500).json({
-//       code: 500,
-//       httpStatus: "INTERNAL_SERVER_ERROR",
-//       message: err.message,
-//     });
-//   }
-// });
 
 module.exports = router;

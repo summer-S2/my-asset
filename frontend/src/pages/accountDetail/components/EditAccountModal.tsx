@@ -2,11 +2,13 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { SectionTitle } from "../../../components/common/SectionTitle";
 import { ModalLayout } from "../../../components/layout/ModalLayout";
 import type { AddAccountSchema } from "../../../validators/addAccount";
-import { Button, Input } from "antd";
+import { Button, Input, Select } from "antd";
 
 import { useEffect } from "react";
 import type { Account } from "../../../types/api";
 import { usePatchAccount } from "../../../hooks/usePatchAccount";
+import { accountMasking } from "../../../utils/fn";
+import { ACCOUNT_TYPE_OPTION, BANK_OPTION } from "../../../utils/constants";
 interface Props {
   data: Account;
   open: boolean;
@@ -15,7 +17,7 @@ interface Props {
 export const EditAccountModal = ({ data, open, setOpen }: Props) => {
   const { control, handleSubmit } = useForm<AddAccountSchema>({
     defaultValues: {
-      account_num: data.account_num,
+      account_num: accountMasking(data.account_num),
       account_type: data.account_type,
       balance: data.balance,
       bank_id: data.bank_id,
@@ -64,18 +66,16 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
                 name={"bank_id"}
                 control={control}
                 render={({ field }) => (
-                  // <Select
-                  //   style={{ width: "100%" }}
-                  //   options={[
-                  //     { value: "1", label: "농협은행" },
-                  //     { value: "2", label: "QTB은행" },
-                  //   ]}
-                  //   {...field}
-                  // />
-                  <Input
-                    size="large"
-                    id={"bank_id"}
-                    placeholder="은행명을 입력해주세요."
+                  <Select
+                    style={{ width: "100%" }}
+                    options={[
+                      {
+                        value: 0,
+                        label: "은행을 선택해주세요.",
+                        disabled: true,
+                      },
+                      ...BANK_OPTION,
+                    ]}
                     {...field}
                   />
                 )}
@@ -90,10 +90,16 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
                 name={"account_type"}
                 control={control}
                 render={({ field }) => (
-                  <Input
-                    size="large"
-                    id={"account_type"}
-                    placeholder="자산 종류를 입력해주세요."
+                  <Select
+                    style={{ width: "100%" }}
+                    options={[
+                      {
+                        value: 0,
+                        label: "자산 종류를 선택해주세요.",
+                        disabled: true,
+                      },
+                      ...ACCOUNT_TYPE_OPTION,
+                    ]}
                     {...field}
                   />
                 )}
@@ -108,12 +114,7 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
                 name={"balance"}
                 control={control}
                 render={({ field }) => (
-                  <Input
-                    size="large"
-                    id={"balance"}
-                    placeholder="잔액을 입력해주세요."
-                    {...field}
-                  />
+                  <Input disabled size="large" id={"balance"} {...field} />
                 )}
               />
             </div>
@@ -126,12 +127,7 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
                 name={"account_num"}
                 control={control}
                 render={({ field }) => (
-                  <Input
-                    size="large"
-                    id={"account_num"}
-                    placeholder="계좌 번호를 입력해주세요."
-                    {...field}
-                  />
+                  <Input disabled size="large" id={"account_num"} {...field} />
                 )}
               />
             </div>

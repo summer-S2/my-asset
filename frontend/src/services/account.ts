@@ -13,7 +13,15 @@ export const getAccount = async (params: GetParams) => {
       params.keyword ? `&keyword=${params.keyword}` : ``
     }${params.sort ? `&sort=${params.sort}` : ``}`
   );
-  //   >(`/account`);
+
+  return response.data;
+};
+
+// 계좌 상세 조회
+export const getAccountDetail = async (id: number) => {
+  const response = await apiClient.get<CustomAxiosRes<Account>>(
+    `/account/${id}`
+  );
 
   return response.data;
 };

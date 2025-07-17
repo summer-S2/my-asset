@@ -5,6 +5,7 @@ import { Home } from "./pages/home/Home";
 import { Login } from "./pages/Login";
 import { NotFound } from "./pages/NotFound";
 import { AccountDetail } from "./pages/accountDetail/AccountDetail";
+import { Account } from "./pages/account/Account";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -17,7 +18,8 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, path: "/", element: <Home /> },
-      { path: "/detail", element: <AccountDetail /> },
+      { path: "/account", element: <Account /> },
+      { path: "/account/:id", element: <AccountDetail /> },
     ],
   },
   { path: `*`, element: <NotFound /> },

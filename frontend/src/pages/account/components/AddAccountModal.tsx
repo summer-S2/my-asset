@@ -83,15 +83,8 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                       },
                       ...BANK_OPTION,
                     ]}
-                    // status={!!errors.bank_id ? "error" : ""}
                     {...field}
                   />
-                  // <Input
-                  //   size="large"
-                  //   id={"bank_id"}
-                  //   placeholder="은행명을 입력해주세요."
-                  //   {...field}
-                  // />
                 )}
               />
             </div>
@@ -116,12 +109,6 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                     ]}
                     {...field}
                   />
-                  // <Input
-                  //   size="large"
-                  //   id={"account_type"}
-                  //   placeholder="자산 종류를 입력해주세요."
-                  //   {...field}
-                  // />
                 )}
               />
             </div>

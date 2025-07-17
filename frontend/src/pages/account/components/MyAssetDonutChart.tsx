@@ -1,3 +1,4 @@
+import { Empty } from "antd";
 import { Loader } from "../../../components/common/Loader";
 import { PieChart } from "../../../components/common/PieChart";
 import { SectionTitle } from "../../../components/common/SectionTitle";
@@ -18,7 +19,9 @@ export const MyAssetDonutChart = ({ data, isLoading }: Props) => {
       ) : data && data.length > 0 ? (
         <PieChart data={data} />
       ) : (
-        <div>데이터가 없습니다..</div>
+        <div>
+          <Empty description={`데이터가 없습니다.`} />
+        </div>
       )}
     </div>
   );
