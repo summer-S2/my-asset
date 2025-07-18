@@ -55,4 +55,5 @@ export interface History {
   transactor: string;
   update_date: string;
   account_type: AccountTypeKey;
+  bank_id: number;
 }

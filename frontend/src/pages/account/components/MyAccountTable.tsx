@@ -4,7 +4,11 @@ import { Table } from "../../../components/common/Table";
 import type { SortStateType } from "../../../types/common";
 import { Button, Empty, Input, Pagination } from "antd";
 import React, { useState } from "react";
-import { accountMasking, formatKoreanCurrency } from "../../../utils/fn";
+import {
+  accountMasking,
+  formatKoreanCurrency,
+  formatKST,
+} from "../../../utils/fn";
 import { useNavigate } from "react-router-dom";
 import { SectionTitle } from "../../../components/common/SectionTitle";
 import { PlusIcon } from "../../../assets/icons/PlusIcon";
@@ -118,7 +122,7 @@ export const MyAccountTable = ({ setOpenAddModal }: Props) => {
         />
       ),
       cell: (info) => (
-        <div className="flex-center">{info.getValue().split("T")[0]}</div>
+        <div className="flex-center">{formatKST(info.getValue())}</div>
       ),
     }),
     // 삭제

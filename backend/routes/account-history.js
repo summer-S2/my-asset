@@ -133,7 +133,8 @@ router.get("/", async (req, res) => {
           ah.id, ah.account_id, ah.transaction_date, ah.transaction_type,
           ah.transactor, ah.memo, ah.amount,
           ah.create_date, ah.update_date,
-          a.account_type
+          a.account_type,
+          a.bank_id
         FROM account_history ah
         JOIN account a ON ah.account_id = a.id
         WHERE ah.delete_date IS NULL
@@ -150,7 +151,8 @@ router.get("/", async (req, res) => {
           ah.id, ah.account_id, ah.transaction_date, ah.transaction_type,
           ah.transactor, ah.memo, ah.amount,
           ah.create_date, ah.update_date,
-          a.account_type
+          a.account_type,
+          a.bank_id
         FROM account_history ah
         JOIN account a ON ah.account_id = a.id
         WHERE ah.delete_date IS NULL

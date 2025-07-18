@@ -18,15 +18,30 @@ export const TRANSACTION_TYPE_KEY_LIST = Object.keys(TRANSACTION_TYPE_MAP); // [
 
 export const TRANSACTION_TYPE_LABEL_LIST = Object.values(TRANSACTION_TYPE_MAP); // ["입금", "출금"]
 
+export const BANK_TYPE_MAP: Record<number, string> = {
+  1: "쿼터백은행",
+  2: "신한은행",
+  3: "카카오뱅크",
+  4: "우리은행",
+  5: "국민은행",
+  6: "하나은행",
+};
+
 // 은행 선택 SELECT 옵션
-export const BANK_OPTION = [
-  { value: 1, label: "쿼터백은행" },
-  { value: 2, label: "신한은행" },
-  { value: 3, label: "카카오뱅크" },
-  { value: 4, label: "우리은행" },
-  { value: 5, label: "국민은행" },
-  { value: 6, label: "하나은행" },
-];
+export const BANK_OPTION = Object.entries(BANK_TYPE_MAP).map(
+  ([key, label]) => ({
+    value: Number(key),
+    label,
+  })
+);
+// export const BANK_OPTION = [
+//   { value: 1, label: "쿼터백은행" },
+//   { value: 2, label: "신한은행" },
+//   { value: 3, label: "카카오뱅크" },
+//   { value: 4, label: "우리은행" },
+//   { value: 5, label: "국민은행" },
+//   { value: 6, label: "하나은행" },
+// ];
 
 // 계좌 타입 선택 SELECT 옵션
 export const ACCOUNT_TYPE_OPTION = [

@@ -10,7 +10,7 @@ export const SectionTitle = ({ text, withUserName, classNames }: Props) => {
   const { user } = useAuthStore();
   return (
     <h3
-      className={`flex-center text-xl font-semibold text-indigo-900 ${classNames}`}
+      className={`flex items-center justify-center text-xl font-semibold text-indigo-900 ${classNames}`}
     >
       {`${withUserName ? `${user?.displayName ?? "사용자"}님 ` : ``}${text}`}
     </h3>

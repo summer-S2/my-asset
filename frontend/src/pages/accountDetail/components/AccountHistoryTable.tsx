@@ -9,6 +9,7 @@ import { TableHeader } from "../../../components/common/TableHeader";
 import { useGetAccountHistory } from "../../../hooks/useGetAccountHistory";
 import { TRANSACTION_TYPE_MAP } from "../../../utils/constants";
 import { useUpdateSearchParams } from "../../../hooks/useUpdateSearchParams";
+import { formatKST } from "../../../utils/fn";
 
 interface Props {
   accountId: number;
@@ -55,7 +56,7 @@ export const AccountHistoryTable = ({ accountId }: Props) => {
         />
       ),
       cell: (info) => (
-        <div className="flex-center">{info.getValue().split("T")[0]}</div>
+        <div className="flex-center">{formatKST(info.getValue())}</div>
       ),
     }),
     columnHelper.accessor("transaction_type", {

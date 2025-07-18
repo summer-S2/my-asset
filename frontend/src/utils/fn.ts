@@ -81,3 +81,21 @@ export const objectToQueryString = (params: Record<string, any>): string => {
   const query = searchParams.toString();
   return query ? `?${query}` : "";
 };
+
+/**
+ * ISO 문자열 한국 시간으로 변환해주는 함수
+ */
+export const formatKST = (dateStr: string): string => {
+  const date = new Date(dateStr);
+
+  // 한국 시간으로 포맷팅
+  return new Intl.DateTimeFormat("ko-KR", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  })
+    .format(date)
+    .replace(/\. /g, "-") // "2025. 07. 01." → "2025-07-01"
+    .replace(".", "");
+};
