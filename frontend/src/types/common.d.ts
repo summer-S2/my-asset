@@ -1,27 +1,20 @@
 import type {
-  ACCOUNT_KEY,
-  ACCOUNT_TYPE,
-  TRANSACTION_TYPE,
+  ACCOUNT_TYPE_MAP,
+  TRANSACTION_TYPE_MAP,
 } from "../utils/constants";
 
-export type AccountType = (typeof ACCOUNT_TYPE)[number];
+export type AccountTypeKey = keyof typeof ACCOUNT_TYPE_MAP; // 1 | 2 | 3 | 4
 
-export type TransactionType = (typeof TRANSACTION_TYPE)[number];
+export type AccountTypeLabel = (typeof AccountTypeKey)[number]; // "입출금" | "저축" | "증권" | "연금"
 
-export type AccountKeyType = (typeof ACCOUNT_KEY)[number];
+export type TransactionTypeKey = keyof typeof TRANSACTION_TYPE_MAP; // "DEPOSIT" | "WITHDRAWAL";
+
+export type TransactionTypeLabel = (typeof TransactionTypeKey)[string]; //  "입금" | "출금";
 
 export type ChartDataType = {
   label: string;
   value: number;
 };
-
-// export type BarGroupChartDataType = {
-//   date: string; // 날짜(월)
-//   입출금: number;
-//   대출: number;
-//   증권: number;
-//   저축: number;
-// };
 
 export type BarGroupChartDataType = {
   date: string;

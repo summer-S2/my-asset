@@ -1,7 +1,8 @@
 import type {
-  AccountType,
-  BarGroupChartDataType,
-  TransactionType,
+  AccountTypeKey,
+  AccountTypeLabel,
+  TransactionTypeKey,
+  TransactionTypeLabel,
 } from "./common";
 
 export interface CustomAxiosError {
@@ -24,24 +25,11 @@ export interface ListData<T> {
   list: T[];
 }
 
-export interface AccountData {
-  bankName: string;
-  accountType: AccountType;
-  accountNumber: string;
-  amount: number;
-  regiDate: string;
-  histoty: HistoryData[];
-}
-
-export interface HistoryData {
-  transactionId: string; // 입출금 아이디
-  date: string; // YYYY-MM-DD // 입출금 날짜
-  amount: number; // 금액
-  transactionType: TransactionType; // 입출금 종류 (입금 / 출금)
-  description: string; // 설명
-  accountType: AccountType; // 계좌 종류
-  bankName: string; // 은행 이름
-  sender: string; // 입금자 (보낸사람)
+export interface GetParams {
+  page?: number;
+  limit?: number;
+  keyword?: string;
+  sort?: string;
 }
 
 export interface Account {
@@ -50,7 +38,7 @@ export interface Account {
   balance: number;
   bank_name: string;
   user_name: string;
-  account_type: number;
+  account_type: AccountTypeKey;
   balance: number;
   create_date: string;
   bank_id: number;
@@ -63,15 +51,8 @@ export interface History {
   id: number;
   memo: string;
   transaction_date: string;
-  transaction_type: string; //"WITHDRAWAL"
+  transaction_type: TransactionTypeKey; //"WITHDRAWAL"
   transactor: string;
   update_date: string;
-  account_type: number;
-}
-
-export interface GetParams {
-  page?: number;
-  limit?: number;
-  keyword?: string;
-  sort?: string;
+  account_type: AccountTypeKey;
 }

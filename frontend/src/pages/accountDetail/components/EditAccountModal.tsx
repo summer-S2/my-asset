@@ -7,8 +7,9 @@ import { Button, Input, Select } from "antd";
 import { useEffect } from "react";
 import type { Account } from "../../../types/api";
 import { usePatchAccount } from "../../../hooks/usePatchAccount";
-import { accountMasking } from "../../../utils/fn";
+import { accountMasking, formatKoreanCurrency } from "../../../utils/fn";
 import { ACCOUNT_TYPE_OPTION, BANK_OPTION } from "../../../utils/constants";
+import { Label } from "../../../components/common/Label";
 interface Props {
   data: Account;
   open: boolean;
@@ -18,6 +19,7 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { isDirty },
   } = useForm<AddAccountSchema>({
     defaultValues: {
@@ -63,9 +65,8 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
           >
             {/* 은행명 */}
             <div>
-              <label className="pl-1" htmlFor="bank_id">
-                은행명
-              </label>
+              <Label id="bank_id" text="은행명" />
+
               <Controller
                 name={"bank_id"}
                 control={control}
@@ -87,9 +88,8 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
             </div>
 
             <div>
-              <label className="pl-1" htmlFor="account_type">
-                자산 종류
-              </label>
+              <Label id="account_type" text="자산 종류" />
+
               <Controller
                 name={"account_type"}
                 control={control}
@@ -111,9 +111,15 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
             </div>
 
             <div>
-              <label className="pl-1" htmlFor="balance">
-                잔액
-              </label>
+              <div className="flex w-full justify-between">
+                <Label id="balance" text="잔액" />
+
+                {watch("balance") && (
+                  <p className="text-xs text-gray-400">
+                    {formatKoreanCurrency(watch("balance"))}
+                  </p>
+                )}
+              </div>
               <Controller
                 name={"balance"}
                 control={control}
@@ -124,9 +130,8 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
             </div>
 
             <div>
-              <label className="pl-1" htmlFor="account_num">
-                계좌번호
-              </label>
+              <Label id="account_num" text="계좌번호" />
+
               <Controller
                 name={"account_num"}
                 control={control}

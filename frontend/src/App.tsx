@@ -6,9 +6,25 @@ import { useEffect } from "react";
 import { useWindowSize } from "@reactuses/core";
 import { theme } from "./styles/antDesignToken";
 import { Confirm } from "./components/common/Confirm";
+import type { AxiosError } from "axios";
+import type { CustomAxiosError } from "./types/api";
+import { useQueryClient } from "@tanstack/react-query";
+
+declare module "@tanstack/react-query" {
+  interface Register {
+    defaultError: AxiosError<CustomAxiosError>;
+  }
+}
 
 function App() {
   const { height } = useWindowSize();
+  const queryClient = useQueryClient();
+
+  queryClient.setDefaultOptions({
+    queries: {
+      retry: false,
+    },
+  });
 
   useEffect(() => {
     let vh = 0;

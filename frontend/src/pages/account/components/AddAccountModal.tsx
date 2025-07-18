@@ -12,11 +12,13 @@ import { ACCOUNT_TYPE_OPTION, BANK_OPTION } from "../../../utils/constants";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ErrorText } from "../../../components/common/ErrorText";
 import { formatKoreanCurrency } from "../../../utils/fn";
+import { Label } from "../../../components/common/Label";
 
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
 export const AddAccountModal = ({ open, setOpen }: Props) => {
   const {
     control,
@@ -53,9 +55,6 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
     }
   }, [isSuccess]);
 
-  // console.log(isValid);
-  // console.log(errors);
-
   return (
     <ModalLayout open={open} setOpen={setOpen}>
       <div className="flex flex-col gap-4">
@@ -69,14 +68,14 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
           >
             {/* 은행명 */}
             <div>
-              <label className="pl-1" htmlFor="bank_id">
-                은행명
-              </label>
+              <Label id="bank_id" text="은행명" />
+
               <Controller
                 name={"bank_id"}
                 control={control}
                 render={({ field }) => (
                   <Select
+                    id={"bank_id"}
                     style={{ width: "100%" }}
                     options={[
                       {
@@ -93,14 +92,14 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
             </div>
 
             <div>
-              <label className="pl-1" htmlFor="account_type">
-                자산 종류
-              </label>
+              <Label id="account_type" text="자산 종류" />
+
               <Controller
                 name={"account_type"}
                 control={control}
                 render={({ field }) => (
                   <Select
+                    id={"account_type"}
                     style={{ width: "100%" }}
                     options={[
                       {
@@ -118,9 +117,8 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
 
             <div>
               <div className="flex w-full justify-between">
-                <label className="pl-1" htmlFor="balance">
-                  잔액
-                </label>
+                <Label id="balance" text="잔액" />
+
                 {watch("balance") && (
                   <p className="text-xs text-gray-400">
                     {formatKoreanCurrency(watch("balance"))}
@@ -145,9 +143,8 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
             </div>
 
             <div>
-              <label className="pl-1" htmlFor="account_num">
-                계좌번호
-              </label>
+              <Label id="account_num" text="계좌번호" />
+
               <Controller
                 name={"account_num"}
                 control={control}
