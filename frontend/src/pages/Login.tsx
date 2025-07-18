@@ -56,7 +56,7 @@ export const Login = () => {
   };
 
   return (
-    <PageLayout withoutHeader>
+    <PageLayout withoutHeader withoutMenu>
       <div
         className="w-full h-full mx-auto"
         style={{
@@ -67,7 +67,7 @@ export const Login = () => {
         <div className="flex flex-col items-center p-6 gap-6 w-full max-w-xl mx-auto border-1 border-gray-200 rounded-4xl shadow-xl">
           {/* 로고 */}
           <div className="text-3xl py-6 font-bold">My Asset 💸</div>
-          {/* <h1 className="font-bold text-2xl">로그인</h1> */}
+
           <form
             className="flex flex-col gap-4 w-full "
             onSubmit={handleSubmit(onSubmit)}
@@ -103,7 +103,8 @@ export const Login = () => {
               htmlType="submit"
               color="primary"
               variant="solid"
-              disabled={isLoading || !watch("password") || !watch("username")}
+              loading={isLoading}
+              disabled={!watch("password") || !watch("username")}
             >
               로그인
             </Button>

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export const NotFound = () => {
   const navigate = useNavigate();
   return (
-    <PageLayout withoutHeader>
+    <PageLayout withoutHeader withoutMenu>
       <div className="w-full h-full flex-center">
         <Result
           status="404"

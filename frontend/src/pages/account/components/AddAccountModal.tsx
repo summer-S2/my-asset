@@ -77,6 +77,7 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                   <Select
                     id={"bank_id"}
                     style={{ width: "100%" }}
+                    size="large"
                     options={[
                       {
                         value: 0,
@@ -101,6 +102,7 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                   <Select
                     id={"account_type"}
                     style={{ width: "100%" }}
+                    size="large"
                     options={[
                       {
                         value: 0,
@@ -135,6 +137,7 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                     placeholder="잔액을 입력해 주세요."
                     status={!!errors.balance ? "error" : ""}
                     type="number"
+                    allowClear
                     {...field}
                   />
                 )}
@@ -155,6 +158,7 @@ export const AddAccountModal = ({ open, setOpen }: Props) => {
                     placeholder="계좌번호를 입력해 주세요."
                     status={!!errors.account_num ? "error" : ""}
                     type="number"
+                    allowClear
                     {...field}
                   />
                 )}

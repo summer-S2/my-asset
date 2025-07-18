@@ -20,7 +20,10 @@ export const Header = () => {
 
   return (
     <header className="fixed h-16 w-full shrink-0 z-50 bg-indigo-100">
-      <div className="w-full h-full flex items-center mx-auto justify-between px-4 max-w-[1280px]">
+      <div
+        // max-w-[1280px]
+        className="w-full h-full flex items-center mx-auto justify-between px-4 "
+      >
         <div onClick={() => navigate("/")} className="font-bold cursor-pointer">
           My Asset 💸
         </div>

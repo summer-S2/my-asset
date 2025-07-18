@@ -100,16 +100,16 @@ export const BarChart = ({ data, width = 400, height = 400 }: Props) => {
                           }}
                           onMouseLeave={() => hideTooltip()}
                         />
-                        <Text
-                          y={height}
-                          style={{
-                            fontSize: "10px",
-                          }}
-                        >
-                          {chartData[barGroup.index].date}
-                        </Text>
                       </Fragment>
                     ))}
+                    <Text
+                      y={height}
+                      style={{
+                        fontSize: "10px",
+                      }}
+                    >
+                      {chartData[barGroup.index].date}
+                    </Text>
                   </Group>
                 );
               })
@@ -130,7 +130,6 @@ export const BarChart = ({ data, width = 400, height = 400 }: Props) => {
               {`${ACCOUNT_TYPE_MAP[el]}: ${formatKoreanCurrency(
                 tooltipData[el]
               )}`}
-              {/* <div>{tooltipData[el]}</div> */}
             </div>
           ))}
         </TooltipWithBounds>

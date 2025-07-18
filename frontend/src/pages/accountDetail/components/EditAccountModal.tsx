@@ -73,6 +73,7 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
                 render={({ field }) => (
                   <Select
                     style={{ width: "100%" }}
+                    size="large"
                     options={[
                       {
                         value: 0,
@@ -96,6 +97,7 @@ export const EditAccountModal = ({ data, open, setOpen }: Props) => {
                 render={({ field }) => (
                   <Select
                     style={{ width: "100%" }}
+                    size="large"
                     options={[
                       {
                         value: 0,
