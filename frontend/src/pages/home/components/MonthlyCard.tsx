@@ -14,7 +14,7 @@ export const MonthlyCard = () => {
   });
 
   return (
-    <div className="h-[320px] overflow-scroll relative flex w-full flex-col p-4 pt-0">
+    <div className="h-[320px] overflow-scroll relative flex flex-grow flex-col p-4 pt-0">
       <SectionTitle
         text="이번달 입출금 내역"
         classNames="sticky top-0 bg-white py-1 z-10 justify-start"

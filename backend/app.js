@@ -15,7 +15,7 @@ var app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5174", // 프론트 주소
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     credentials: true,
   })
 );

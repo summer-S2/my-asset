@@ -12,12 +12,11 @@ export const Home = () => {
       <div className="flex flex-col p-4 gap-8 w-full h-full">
         <GreetingCard user={user} />
 
-        <div className="flex w-full gap-4">
-          <div className="w-1/2">
-            {/* 캐러셀 */}
+        <div className="flex flex-grow gap-4 flex-col md:flex-row">
+          <div className="flex-grow md:w-[49%]">
             <CarouselCard />
           </div>
-          <div className="w-1/2">
+          <div className="flex-grow md:w-[49%]">
             <SummaryCard />
           </div>
         </div>
