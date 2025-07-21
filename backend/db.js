@@ -1,5 +1,6 @@
 const mysql = require("mysql2");
 
+// 커넥션 누수 방지
 const pool = mysql.createPool({
   host: "localhost",
   user: "yj",
