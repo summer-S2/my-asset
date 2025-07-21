@@ -8,7 +8,7 @@ import type { ChartDataType } from "../../types/common";
 import { formatKoreanCurrency } from "../../utils/fn";
 import { useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
-import { useAssetChartData } from "../../hooks/useAssetChartData";
+import { useAssetChartData } from "../../hooks/utils/useAssetChartData";
 
 interface Props {
   data: Account[];

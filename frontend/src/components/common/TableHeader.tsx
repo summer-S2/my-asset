@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import type { SortStateType } from "../../types/common";
 import { SortIcon } from "../../assets/icons/SortIcon";
 import { toggleSort } from "../../utils/fn";
-import { useUpdateSearchParams } from "../../hooks/useUpdateSearchParams";
+import { useUpdateSearchParams } from "../../hooks/utils/useUpdateSearchParams";
 
 interface Props<T> {
   contents: ReactNode;

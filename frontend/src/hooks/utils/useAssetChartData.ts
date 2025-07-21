@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import type { Account, History } from "../types/api";
-import type { BarGroupChartDataType, ChartDataType } from "../types/common";
-import { ACCOUNT_TYPE_MAP } from "../utils/constants";
+import type { Account, History } from "../../types/api";
+import type { BarGroupChartDataType, ChartDataType } from "../../types/common";
+import { ACCOUNT_TYPE_MAP } from "../../utils/constants";
 
 interface Props {
   historyData: History[] | null;
@@ -67,6 +67,9 @@ export const useAssetChartData = ({ historyData, accountData }: Props) => {
       setPieData(donut);
     }
   }, [accountData]);
+
+  // console.log("막대차트 데이터", chartData);
+  // console.log("도넛차트 데이터", pieData);
 
   return { chartData, pieData };
 };

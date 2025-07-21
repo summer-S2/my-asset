@@ -15,7 +15,7 @@ export const GreetingCard = ({ user }: Props) => {
       <p className="text-white text-4xl p-4 absolute right-5 top-5">{`${user?.displayName}님 안녕하세요! 😃`}</p>
       <img
         src={cardImg}
-        className="w-[320px] absolute bottom-5 left-5 animate-flipBounce"
+        className="w-[320px] absolute bottom-5 left-5 animate-flip-bounce"
       />
     </div>
   );

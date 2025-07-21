@@ -7,7 +7,7 @@ import { localPoint } from "@visx/event";
 import { scaleBand, scaleLinear, scaleOrdinal } from "@visx/scale";
 import type { BarGroupChartDataType } from "../../types/common";
 import { CHART_COLORS, ACCOUNT_TYPE_MAP } from "../../utils/constants";
-import { useAssetChartData } from "../../hooks/useAssetChartData";
+import { useAssetChartData } from "../../hooks/utils/useAssetChartData";
 
 import { Fragment } from "react/jsx-runtime";
 import { formatKoreanCurrency } from "../../utils/fn";

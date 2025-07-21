@@ -7,15 +7,19 @@ const upload = multer();
 // 계좌 리스트 조회
 // GET /account?keyword=신한&limit=10&page=1
 router.get("/", async (req, res) => {
+  // 파라미터 추출
   const { keyword = "", limit, page, sort = "" } = req.query;
 
+  // 페이징 처리 할건지 여부. page랑 limit을 안보내면 전체 데이터 조회
   const isPaging = page !== undefined || limit !== undefined;
 
-  const pageNum = Math.max(Number(page) || 1, 1);
-  const limitNum = Math.max(Number(limit) || 10, 1);
-  const offset = (pageNum - 1) * limitNum;
+  const pageNum = Math.max(Number(page) || 1, 1); // 페이지
+  const limitNum = Math.max(Number(limit) || 10, 1); // 페이지 사이즈
+  const offset = (pageNum - 1) * limitNum; // 조회 시작 위치
 
-  const [sortKey, sortOrder] = sort.split(".");
+  const [sortKey, sortOrder] = sort.split("."); // 정렬 키와 순서 ex) balance.desc → balance, desc
+
+  // 정렬이 가능한 키들
   const validSortKeys = [
     "bank_name",
     "account_num",
@@ -23,6 +27,8 @@ router.get("/", async (req, res) => {
     "create_date",
     "account_type",
   ];
+
+  // 정렬 순서
   const validOrder = ["asc", "desc"];
 
   const orderByClause =
@@ -31,10 +37,10 @@ router.get("/", async (req, res) => {
       : `ORDER BY a.id DESC`;
 
   try {
-    let count = 0;
-    let rows;
+    let count = 0; // 총 데이터 수
+    let rows; // 결과값
 
-    // 1. 페이징 O → count + LIMIT + OFFSET
+    // 페이징 O → count + LIMIT + OFFSET
     if (isPaging) {
       const [[{ count: total }]] = await db.query(
         `
@@ -65,7 +71,7 @@ router.get("/", async (req, res) => {
         [`%${keyword}%`, `%${keyword}%`, limitNum, offset]
       );
     }
-    // 2. 페이징 X → 전체 데이터 조회
+    // 페이징 X → 전체 데이터 조회
     else {
       [rows] = await db.query(
         `
@@ -157,7 +163,7 @@ router.get("/:id", async (req, res) => {
 router.post("/", upload.none(), async (req, res) => {
   const { account_num, balance = 0, account_type, bank_id, user_id } = req.body;
 
-  // 필수값 확인
+  // 필수값 확인 - 계좌번호, 계좌타입, 은행 id, 사용자 id
   if (!account_num || !account_type || !bank_id || !user_id) {
     return res.status(400).json({
       code: 400,
@@ -177,19 +183,42 @@ router.post("/", upload.none(), async (req, res) => {
   }
 
   try {
-    // 계좌번호 중복 여부 확인
+    //  해당 계좌번호가 존재하는지 확인 (삭제 여부와 상관없이)
     const [[existing]] = await db.query(
-      `SELECT id FROM account WHERE account_num = ? AND delete_date IS NULL`,
+      `SELECT id, delete_date FROM account WHERE account_num = ?`,
       [account_num]
     );
 
-    if (existing) {
+    //  존재 + 삭제 안됨 → 중복 에러
+    if (existing && existing.delete_date === null) {
       return res.status(409).json({
         code: 409,
         httpStatus: "CONFLICT",
         message: "이미 존재하는 계좌번호입니다.",
       });
     }
+
+    //  존재 + 삭제됨 → 사용 불가
+    if (existing && existing.delete_date !== null) {
+      return res.status(400).json({
+        code: 400,
+        httpStatus: "BAD_REQUEST",
+        message: "삭제된 계좌번호입니다. 사용할 수 없습니다.",
+      });
+    }
+    // // 계좌번호 중복 여부 확인
+    // const [[existing]] = await db.query(
+    //   `SELECT id FROM account WHERE account_num = ? AND delete_date IS NULL`,
+    //   [account_num]
+    // );
+
+    // if (existing) {
+    //   return res.status(409).json({
+    //     code: 409,
+    //     httpStatus: "CONFLICT",
+    //     message: "이미 존재하는 계좌번호입니다.",
+    //   });
+    // }
 
     await db.query(
       `
@@ -218,6 +247,7 @@ router.post("/", upload.none(), async (req, res) => {
 // 계좌 수정
 // PATCH /account
 router.patch("/", upload.none(), async (req, res) => {
+  // 수정 가능 항목 - 은행 id, 계좌 타입
   const { bank_id, account_type, id } = req.body;
 
   if (!id || !bank_id || !account_type) {
@@ -278,7 +308,7 @@ router.delete("/:id", async (req, res) => {
   try {
     await conn.beginTransaction();
 
-    // 1. 계좌 soft delete
+    //  계좌 soft delete
     const [accountResult] = await conn.query(
       `UPDATE account SET delete_date = NOW() WHERE id = ? AND delete_date IS NULL`,
       [id]
@@ -293,7 +323,7 @@ router.delete("/:id", async (req, res) => {
       });
     }
 
-    // 2. 연관 거래 이력도 soft delete
+    //  연관 거래 이력도 soft delete
     await conn.query(
       `UPDATE account_history SET delete_date = NOW() WHERE account_id = ? AND delete_date IS NULL`,
       [id]

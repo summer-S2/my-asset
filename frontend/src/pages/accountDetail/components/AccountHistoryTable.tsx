@@ -8,7 +8,7 @@ import { Button, Empty, Input, Pagination } from "antd";
 import { TableHeader } from "../../../components/common/TableHeader";
 import { useGetAccountHistory } from "../../../hooks/useGetAccountHistory";
 import { TRANSACTION_TYPE_MAP } from "../../../utils/constants";
-import { useUpdateSearchParams } from "../../../hooks/useUpdateSearchParams";
+import { useUpdateSearchParams } from "../../../hooks/utils/useUpdateSearchParams";
 import { formatKST } from "../../../utils/fn";
 
 interface Props {

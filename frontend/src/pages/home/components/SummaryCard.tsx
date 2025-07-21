@@ -1,5 +1,5 @@
 import { useGetAccount } from "../../../hooks/useGetAccount";
-import { useAssetChartData } from "../../../hooks/useAssetChartData";
+import { useAssetChartData } from "../../../hooks/utils/useAssetChartData";
 import { Loader } from "../../../components/common/Loader";
 import { Empty, List } from "antd";
 import { SectionTitle } from "../../../components/common/SectionTitle";

@@ -17,7 +17,7 @@ import { useGetAccount } from "../../../hooks/useGetAccount";
 import type { Account } from "../../../types/api";
 import { ACCOUNT_TYPE_MAP } from "../../../utils/constants";
 import { useDeleteAccount } from "../../../hooks/useDeleteAccount";
-import { useUpdateSearchParams } from "../../../hooks/useUpdateSearchParams";
+import { useUpdateSearchParams } from "../../../hooks/utils/useUpdateSearchParams";
 import { DeleteIcon } from "../../../assets/icons/DeleteIcon";
 import { useConfirmStore } from "../../../stores/confirmStore";
 

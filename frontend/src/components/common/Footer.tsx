@@ -1,4 +1,6 @@
-export const Footer = () => {
+import { memo } from "react";
+
+export const Footer = memo(() => {
   return (
     <footer className="px-4 mx-auto h-10 shrink-0">
       <div className="flex flex-col items-center justify-center h-full shrink-0">
@@ -6,4 +8,4 @@ export const Footer = () => {
       </div>
     </footer>
   );
-};
+});

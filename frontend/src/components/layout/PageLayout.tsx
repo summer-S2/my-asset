@@ -30,9 +30,11 @@ export const PageLayout = ({
         })}
       >
         {!withoutMenu && <SideMenu />}
-        <div className="w-full h-full max-w-[1280px] mx-auto">{children}</div>
+        <div className="flex-grow flex h-full max-w-[1280px] min-w-0 mx-auto flex-col">
+          {children}
+          {!withoutFooter && <Footer />}
+        </div>
       </main>
-      {!withoutFooter && <Footer />}
     </div>
   );
 };
